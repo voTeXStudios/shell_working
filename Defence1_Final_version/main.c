@@ -49,7 +49,7 @@ void prompt(char *color)
   static int f_time = 1;
   if (f_time){
     const char* screen_clear = " \e[1;1H\e[2J";
-    if (write(STDOUT_FILENO, screen_clear,12) == -1){
+    if (write(STDOUT_FILENO, screen_clear, 12) == -1){
       fprintf(stderr, "Error while clearing the screen");
       return;
     }
@@ -159,6 +159,10 @@ void exec(char color[], char** parameters, int *nb_par)
     }
     else if (strcmp(parameters[0], "color") == 0){
       change_color(parameters[1], color);
+      return;
+    }
+    else if (strcmp(parameters[0], "clear") == 0){
+      clear(*nb_par);
       return;
     }
     else if (strcmp(parameters[0], "tree") == 0){

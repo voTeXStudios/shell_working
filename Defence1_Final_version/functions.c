@@ -167,3 +167,17 @@ void echo(int nb_par, char** par)
     
     printf("\n");
 }
+
+void clear(int nb_par)
+{
+  if (nb_par > 1)
+  {
+    fprintf(stderr, "Too many arguments: Type '-help' to know more\n");
+    return;
+  }
+  const char* screen_clear = " \e[1;1H\e[2J";
+  if (write(STDOUT_FILENO, screen_clear, 12) == -1){
+      fprintf(stderr, "Error while clearing the screen");
+      return;
+  }
+}

@@ -9,5 +9,6 @@ void red();
 void mv (char *file_1, char* file_2);
 void remove_dir(int nb_par, char** dirname);
 void echo(int nb_par, char** par);
+void clear(int nb_par);
 
 #endif

@@ -143,7 +143,7 @@ void _cat(int argc, char *argv[])
 
             re_read(STDOUT_FILENO, fd_in, e_triggered, &n, n_triggered);
             if (i != argc - 1){
-                if (write(STDOUT_FILENO, "\n", 3) == -1)
+                if (write(STDOUT_FILENO, "\n", 2) == -1)
                 {
                     fprintf(stderr,"Error while writing next line\n");
                     return;
