@@ -89,7 +89,8 @@ void helppage(int nb_par)
          "rmdir_attributes_arg1 - Removes the directory or multiple directories with DirName = arg(s)\n\n"
          "   - attributes: '-f' - used to delete non-empty directories\n\n"
          "touch_arg(s)          - Creates file(s) with FileName = arg(s)\n\n"
-         "tree_arg              - Prints the directories/sub-directories and files in tree structure\n\n"             
+         "tree_arg              - Prints the directories/sub-directories and files in tree structure\n\n"  
+         "clear                 - Clears the terminal. Similar to what we have in bash\n\n"           
         );
 }
 
@@ -164,7 +165,6 @@ void echo(int nb_par, char** par)
 {
     for(int i = 1; i < nb_par; i++)
       printf("%s ", par[i]);
-    
     printf("\n");
 }
 
