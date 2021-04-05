@@ -10,10 +10,12 @@
 void print_error_cd(char *this, char *dirname)
 {
     fprintf(stderr, "%s cannot go to %s\n%s\n", this, dirname, strerror(errno));
+    return;
 }
 void print_usage_cd()
 {
     fprintf(stderr, "Too many arguments: Type 'help' to know more\n");
+    return;
 }
 int cd(int argc, char *argv[])
 {
