@@ -30,7 +30,7 @@ void create_dir(int nb_par, char** dirname) //this is the mkdir fn, handles erro
 {
   if(nb_par == 1)
     fprintf(stderr, "SYNTAX ERROR:\nUsage: mkdir [dir_name]. Try 'help' for more information.\n");
-  
+
   for (int i = 1; i < nb_par; i++)
   {
     int check;
@@ -89,8 +89,8 @@ void helppage(int nb_par)
          "rmdir_attributes_arg1 - Removes the directory or multiple directories with DirName = arg(s)\n\n"
          "   - attributes: '-f' - used to delete non-empty directories\n\n"
          "touch_arg(s)          - Creates file(s) with FileName = arg(s)\n\n"
-         "tree_arg              - Prints the directories/sub-directories and files in tree structure\n\n"  
-         "clear                 - Clears the terminal. Similar to what we have in bash\n\n"           
+         "tree_arg              - Prints the directories/sub-directories and files in tree structure\n\n"
+         "clear                 - Clears the terminal. Similar to what we have in bash\n\n"
         );
 }
 
@@ -180,4 +180,8 @@ void clear(int nb_par)
       fprintf(stderr, "Error while clearing the screen");
       return;
   }
+}
+
+void sleep_fun(int seconds){
+  sleep(seconds);
 }

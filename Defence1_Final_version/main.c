@@ -1,19 +1,144 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/wait.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 #include <dirent.h>
-#include <err.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/utsname.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
+#include <pwd.h>
+#include <grp.h>
+#include <time.h>
+#include <signal.h>
+#include <limits.h>
+#include <fcntl.h>
+#include <poll.h>
+#include <syslog.h>
 #include "functions.h"
 #include "rm.h"
 #include "cat.h"
 #include "ls.h"
 #include "cd.h"
 #include "tree.h"
-// THE CORE OF THE SHELL
-///colors
-//colors
+#include "job_struct.h"
+#include "bg.h"
+
+job back[100];
+int back_count = 0, shellid = 0, childpid = 0;
+job fore;
+/////////////////////////////////////////////////
+void bg(char* job_nb, int k, int back_count, job back[])
+{
+    int proc = atoi(job_nb);
+    if (k >= 3)
+        printf("Too many arguments\n");
+    else if (k <= 1)
+        printf("Too few arguments\n");
+    else
+    {
+        if (proc > back_count)
+            printf("No such job\n");
+        else
+        {
+            pid_t pid = back[proc].pid;
+            kill(pid, SIGTTIN);
+            kill(pid, SIGCONT);
+        }
+    }
+}
+
+void print_jobs(int back_count, job back[])
+{
+    int i;
+    int j = 1;
+    for (i = 1; i <= back_count; i++)
+    {
+        if (back[i].is_back == 1)
+        {
+            char stat[1000];
+            char status;
+            int p;
+            long unsigned mem;
+            char str[10];
+            sprintf(str, "%d", back[i].pid);
+
+            strcpy(stat, "/proc/");
+            strcat(stat, str);
+            strcat(stat, "/stat");
+            FILE *fd;
+            if ((fd = fopen(stat, "r")) == NULL)
+            {
+                printf("[%d] %s %s [%d]\n", j, "Done", back[i].name, back[i].pid);
+            }
+            else
+            {
+                fscanf(fd, "%d %*s %c %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %lu %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d", &p, &status, &mem);
+                fclose(fd);
+                printf("[%d] ", j);
+                if (status == 'T')
+                    printf("%s ", "Stopped");
+                else
+                    printf("%s ", "Running");
+                printf("%s [%d]\n", back[i].name, back[i].pid);
+            }
+            j++;
+        }
+    }
+}
+/////////////////////////
+void child_sig(int signo)
+{
+    pid_t pid;
+    int x;
+    pid = waitpid(WAIT_ANY, &x, WNOHANG);
+    int i;
+    for (i = 1; i <= back_count; i++)
+    {
+        if (back[i].pid == pid)
+        {
+            int exit_status = WEXITSTATUS(x);
+            if (exit_status == 0)
+                printf("\n%s with pid %d exited normally\n", back[i].name, back[i].pid);
+            else
+                printf("\n%s with pid %d exited with exit status %d\n", back[i].name, back[i].pid, exit_status);
+            fflush(stdout);
+            break;
+        }
+    }
+    signal(SIGCHLD, child_sig);
+}
+
+void ctrl_c(int signo)
+{
+    pid_t p = getpid();
+    if (p != shellid)
+        return;
+    if (childpid != -1)
+        kill(childpid, SIGINT);
+    signal(SIGINT, ctrl_c);
+}
+
+void ctrl_z(int signo)
+{
+    pid_t p = getpid();
+    if (p != shellid)
+        return;
+    //print();
+    if (childpid != -1)
+    {
+        kill(childpid, SIGTTIN);
+        kill(childpid, SIGTSTP);
+        back_count++;
+        back[back_count].pid = childpid;
+        back[back_count].is_back = 1;
+        strcpy(back[back_count].name, fore.name);
+    }
+    signal(SIGTSTP, ctrl_z);
+}
+
+
 void red (){
   printf("\033[0;31m");
 }
@@ -75,7 +200,7 @@ void prompt(char *color)
   else{
     cyan();
   }
-  
+
   char* res = pwd(1);
   printf(" %s$ ", res);
   reset();
@@ -189,6 +314,18 @@ void exec(char color[], char** parameters, int *nb_par)
       echo(*nb_par, parameters);
       return;
     }
+    else if (strcmp(parameters[0], "bg") == 0){
+      bg(parameters[1], *nb_par, back_count, back);
+      return;
+    }
+    else if (strcmp(parameters[0], "sleep") == 0){
+      sleep_fun(atoi(parameters[1]));
+      return;
+    }
+    else if (strcmp(parameters[0], "job") == 0){
+      print_jobs(back_count, back);
+      return;
+    }
     else {
       red();
       printf("SHELL : Unknown command. Type help to list all the possible commands\n");
@@ -201,30 +338,57 @@ int main()
   //MAIN LOOP OF THE SHELL
   int nb_par = 0;
   char color[20];
-
+  shellid = getpid();
+  signal(SIGCHLD, SIG_IGN);
+  signal(SIGCHLD, child_sig);
+  signal(SIGINT, ctrl_c);
+  signal(SIGTSTP, ctrl_z);
+  prompt(color);
   while (1)
   {
+    childpid = -1;
     char** parameters = malloc(500 * sizeof(char*));
     for (size_t i = 0; i < 500; i++)
       parameters[i] = calloc(100, sizeof(char));
-    prompt(color);
+    //prompt(color);
     read_command(parameters, &nb_par);
     if (nb_par == 0)
     {
       free(parameters);
       continue;
     }
-    if (fork() != 0)
+    int pid = fork();
+    if (pid < 0){
+      printf("Error: Fork Failed\n");
+
+    }
+    else if (pid == 0)
     {
-      wait(NULL);
-      exit(1);
+      setpgid(0, 0);
+      if (strcmp(parameters[0], "exit") == 0)
+        exit(1);
+      exec(color, parameters, &nb_par);
     }
     else
     {
       if (strcmp(parameters[0], "exit") == 0)
         exit(1);
-      exec(color, parameters, &nb_par);
+      prompt(color);
+      childpid = pid;
+      char name[100];
+      strcpy(name, parameters[0]);
+      int i;
+      for (i = 1; i< nb_par - 1; i ++){
+        strcat(name, " ");
+        strcat(name, parameters[i]);
+      }
+      fore.pid = pid;
+      strcpy(fore.name, name);
+      fore.is_back = 0;
+      waitpid(-1, NULL, WUNTRACED);
+      //printf("bruh\n");
     }
+    //printf("here\n");
     if (strcmp(parameters[0], "exit") == 0)
       exit(1);
     free(parameters);
