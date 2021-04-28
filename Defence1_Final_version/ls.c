@@ -41,7 +41,7 @@ void green1() {
 
 void print_files_dir(int a_triggered, struct dirent **contents, int content_count)
 {
-    
+
     struct stat st;
     int stat_check;
     if (a_triggered == 0)
@@ -55,7 +55,7 @@ void print_files_dir(int a_triggered, struct dirent **contents, int content_coun
                 blue1();
             else if (stat_check == 0 && st.st_mode & S_IXUSR)
                 green1();
-            
+
             puts(contents[i]->d_name);
             reset1();
         }
@@ -122,6 +122,7 @@ void _list(int argc, char* argv[], int* a_triggered, int* file_dir_exists)
 }
 
 int _ls(int argc, char *argv[]){
+  printf("ls\n");
     int a_triggered = 0;
     int file_dir_exists = 0;
     int content_count;
@@ -142,4 +143,3 @@ int _ls(int argc, char *argv[]){
     _list(argc, argv, &a_triggered, &file_dir_exists);
     return 0;
 }
-

@@ -4,10 +4,10 @@ CC= gcc
 CPPFLAGS=
 CFLAGS= -Wall -Wextra
 LDFLAGS=
-LDLIBS=
+LDLIBS= -lreadline
 
 
-SRC= ls.c functions.c rm.c cat.c cd.c tree.c main.c 
+SRC= ls.c functions.c rm.c cat.c cd.c tree.c main.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 

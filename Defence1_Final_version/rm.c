@@ -52,5 +52,4 @@ void _delete(int argc, char **argv)
         else
             print_usage("rm");
     }
-    print_no_arg_err();
 }

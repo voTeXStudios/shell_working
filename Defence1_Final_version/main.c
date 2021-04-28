@@ -16,6 +16,8 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <syslog.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "functions.h"
 #include "rm.h"
 #include "cat.h"
@@ -208,11 +210,12 @@ void prompt(char *color)
 
 void read_command(char **parameters, int *nb_par)
 {
-  char line[150];
+  char *line;
 	int sub_index = 0;
   int c = 0;
   int counter = 0;
   int i = 0;
+  /*
   while (1)
  	{
  	  c = fgetc(stdin);
@@ -226,28 +229,46 @@ void read_command(char **parameters, int *nb_par)
       break;
     counter += 1;
   }
+  */
 
-	line[counter] = 0;
 
-	for (int j = 0; j <= counter; j++)
+	//line[counter] = 0;
+  line = readline("");
+  int j  = 0;
+	while(line[j] != '\0')
   {
     if (line[j] == ' ' && sub_index != 0)
     {
+      //printf("first case\n");
       parameters[i][sub_index] = 0;
+      printf("%s\n",parameters[i]);
 			i++;
 			sub_index = 0;
 		}
+    /*
     else if (line[j] == 0 && sub_index != 0)
     {
+      //printf("second case\n");
       parameters[i][sub_index] = 0;
       i++;
       sub_index = 0;
     }
+    */
     else if (line[j] != ' ')
     {
+      //printf("third case\n");
 			parameters[i][sub_index] = line[j];
 			sub_index++;
     }
+    j ++;
+  }
+  if (line[j] == 0 && sub_index != 0)
+  {
+    //printf("second case\n");
+    parameters[i][sub_index] = 0;
+    printf("%s\n",parameters[i]);
+    i++;
+    sub_index = 0;
   }
   *nb_par = i;
   return;
@@ -352,6 +373,7 @@ int main()
       parameters[i] = calloc(100, sizeof(char));
     //prompt(color);
     read_command(parameters, &nb_par);
+    printf("%i\n",nb_par);
     if (nb_par == 0)
     {
       free(parameters);
