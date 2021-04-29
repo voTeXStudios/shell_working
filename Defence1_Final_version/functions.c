@@ -161,11 +161,97 @@ void remove_dir(int nb_par, char** dirname) //this is the rmdir fn with "-f", ha
   }
 }
 
+void _append(int nb_par, char** par, int track)
+{
+  FILE* file;
+  char *des = calloc(100, sizeof(char));
+  file = fopen(par[track + 1], "a");
+  if(file == NULL)
+  {
+    fprintf(stderr, "There was an error creating the file\n");
+    return;
+  }
+  for (int i = 1; i < nb_par; i++)
+  {
+    if (strcmp(par[i], ">>") == 0)
+      continue;
+    if (strcmp(par[i], par[track + 1])==0)
+      continue;
+    des = strcat(des, par[i]);
+    if (i < nb_par - 1)
+      des = strcat(des, " ");
+  }
+  fprintf(file, "%s\n", des);
+  fclose(file);
+}
+
+void _overwrite(int nb_par, char** par, int track)
+{
+  FILE* file;
+  char* des = calloc(100, sizeof(char));
+  file = fopen(par[track + 1], "w");
+  if(file == NULL)
+  {
+    fprintf(stderr, "There was an error creating the file\n");
+    return;
+  }
+  for (int i = 1; i < nb_par; i++)
+  {
+    if (strcmp(par[i], ">") == 0)
+      continue;
+    if (strcmp(par[i], par[track + 1])==0)
+      continue;
+    des = strcat(des, par[i]);
+    if (i < nb_par - 1)
+      des = strcat(des, " ");
+  }
+  fprintf(file, "%s\n", des);
+  fclose(file);
+}
+
 void echo(int nb_par, char** par)
 {
+  int append = 0;
+  int overwrite = 0;
+  int track = 0;
+  for (int i = 1; i < nb_par; i++)
+  {
+    if (strcmp(par[i], ">>") == 0)
+    {
+      append = 1;
+      track = i;
+    }
+    else if (strcmp(par[i], ">") == 0)
+    {
+      overwrite = 1;
+      track = i;
+    }
+  }
+  if (append == 1 && overwrite == 1)
+  {
+    fprintf(stderr, "Invalid arguments: Type 'help' to know more\n");
+    return;
+  }    
+  if (append == 0 && overwrite == 0)
+  {
     for(int i = 1; i < nb_par; i++)
       printf("%s ", par[i]);
     printf("\n");
+    return;
+  }
+  if(track + 1 == nb_par)
+  {
+    fprintf(stderr, "Token Expected: Type 'help' to know more\n");
+    return;
+  }
+  else
+  {
+    if (overwrite == 1)
+      _overwrite(nb_par, par, track);
+    if (append == 1)
+      _append(nb_par, par, track);
+  }
+  return;
 }
 
 void clear(int nb_par)
