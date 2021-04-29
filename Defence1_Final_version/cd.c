@@ -25,7 +25,6 @@ int cd(int argc, char *argv[])
     if (argc == 2)
     {
         check = chdir(argv[1]);
-        printf("changed\n");
         if (check != 0)
             print_error_cd(argv[0], argv[1]);
     }
