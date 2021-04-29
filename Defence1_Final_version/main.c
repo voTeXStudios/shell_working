@@ -25,14 +25,14 @@
 #include "cd.h"
 #include "tree.h"
 #include "job_struct.h"
-#include "bg.h"
+//#include "bg.h"
 #include "grep.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
 job fore;
 /////////////////////////////////////////////////
-void bg(char* job_nb, int k, int back_count, job back[])
+/*void bg(char* job_nb, int k, int back_count, job back[])
 {
     int proc = atoi(job_nb);
     if (k >= 3)
@@ -50,7 +50,7 @@ void bg(char* job_nb, int k, int back_count, job back[])
             kill(pid, SIGCONT);
         }
     }
-}
+}*/
 
 void print_jobs(int back_count, job back[])
 {
@@ -128,7 +128,7 @@ void ctrl_z()
     pid_t p = getpid();
     if (p != shellid)
         return;
-        
+
     if (childpid != -1)
     {
         kill(childpid, SIGTTIN);
@@ -303,10 +303,10 @@ void exec(char color[], char** parameters, int *nb_par)
       echo(*nb_par, parameters);
       return;
     }
-    else if (strcmp(parameters[0], "bg") == 0){
+    /*else if (strcmp(parameters[0], "bg") == 0){
       bg(parameters[1], *nb_par, back_count, back);
       return;
-    }
+    }*/
     else if (strcmp(parameters[0], "sleep") == 0){
       sleep_fun(atoi(parameters[1]));
       return;
