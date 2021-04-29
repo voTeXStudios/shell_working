@@ -26,6 +26,7 @@
 #include "tree.h"
 #include "job_struct.h"
 #include "bg.h"
+#include "grep.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -90,7 +91,7 @@ void print_jobs(int back_count, job back[])
     }
 }
 /////////////////////////
-void child_sig(int signo)
+void child_sig()
 {
     pid_t pid;
     int x;
@@ -112,7 +113,7 @@ void child_sig(int signo)
     signal(SIGCHLD, child_sig);
 }
 
-void ctrl_c(int signo)
+void ctrl_c()
 {
     pid_t p = getpid();
     if (p != shellid)
@@ -122,12 +123,12 @@ void ctrl_c(int signo)
     signal(SIGINT, ctrl_c);
 }
 
-void ctrl_z(int signo)
+void ctrl_z()
 {
     pid_t p = getpid();
     if (p != shellid)
         return;
-    //print();
+        
     if (childpid != -1)
     {
         kill(childpid, SIGTTIN);
@@ -212,61 +213,28 @@ void read_command(char **parameters, int *nb_par)
 {
   char *line;
 	int sub_index = 0;
-  int c = 0;
-  int counter = 0;
   int i = 0;
-  /*
-  while (1)
- 	{
- 	  c = fgetc(stdin);
-    line[counter] = (char) c;
-    if (c == 10 && counter == 0)
-    {
-      *nb_par = 0;
-      return;
-    }
-    if (c == 10)
-      break;
-    counter += 1;
-  }
-  */
-
-
-	//line[counter] = 0;
+  
   line = readline("");
   int j  = 0;
 	while(line[j] != '\0')
   {
     if (line[j] == ' ' && sub_index != 0)
     {
-      //printf("first case\n");
       parameters[i][sub_index] = 0;
-      printf("%s\n",parameters[i]);
 			i++;
 			sub_index = 0;
 		}
-    /*
-    else if (line[j] == 0 && sub_index != 0)
-    {
-      //printf("second case\n");
-      parameters[i][sub_index] = 0;
-      i++;
-      sub_index = 0;
-    }
-    */
     else if (line[j] != ' ')
     {
-      //printf("third case\n");
 			parameters[i][sub_index] = line[j];
 			sub_index++;
     }
-    j ++;
+    j++;
   }
   if (line[j] == 0 && sub_index != 0)
   {
-    //printf("second case\n");
     parameters[i][sub_index] = 0;
-    printf("%s\n",parameters[i]);
     i++;
     sub_index = 0;
   }
@@ -312,7 +280,7 @@ void exec(char color[], char** parameters, int *nb_par)
       return;
     }
     else if (strcmp(parameters[0], "tree") == 0){
-      tree(*nb_par, parameters);
+      _tree(*nb_par, parameters);
       return;
     }
     else if (strcmp(parameters[0], "rm") == 0){
@@ -347,6 +315,10 @@ void exec(char color[], char** parameters, int *nb_par)
       print_jobs(back_count, back);
       return;
     }
+    else if (strcmp(parameters[0], "grep") == 0){
+      grep(*nb_par, parameters);
+      return;
+    }
     else {
       red();
       printf("SHELL : Unknown command. Type help to list all the possible commands\n");
@@ -358,13 +330,16 @@ int main()
 {
   //MAIN LOOP OF THE SHELL
   int nb_par = 0;
+  int pid;
   char color[20];
-  shellid = getpid();
+  //int shellid = getpid();
   signal(SIGCHLD, SIG_IGN);
   signal(SIGCHLD, child_sig);
   signal(SIGINT, ctrl_c);
   signal(SIGTSTP, ctrl_z);
   prompt(color);
+
+
   while (1)
   {
     childpid = -1;
@@ -373,25 +348,21 @@ int main()
       parameters[i] = calloc(100, sizeof(char));
     //prompt(color);
     read_command(parameters, &nb_par);
-    printf("%i\n",nb_par);
-    if (nb_par == 0)
-    {
+
+    if (nb_par == 0){
       free(parameters);
       continue;
     }
-    int pid = fork();
-    if (pid < 0){
-      printf("Error: Fork Failed\n");
 
-    }
-    else if (pid == 0)
-    {
-      setpgid(0, 0);
-      if (strcmp(parameters[0], "exit") == 0)
-        exit(1);
+    if (strcmp(parameters[0], "cd") == 0){
       exec(color, parameters, &nb_par);
+      prompt(color);
+      free(parameters);
+      continue;
     }
-    else
+
+    pid = fork();
+    if (pid != 0)
     {
       if (strcmp(parameters[0], "exit") == 0)
         exit(1);
@@ -399,18 +370,26 @@ int main()
       childpid = pid;
       char name[100];
       strcpy(name, parameters[0]);
-      int i;
-      for (i = 1; i< nb_par - 1; i ++){
+      for (int i = 1; i< nb_par - 1; i ++)
+      {
         strcat(name, " ");
         strcat(name, parameters[i]);
       }
+
       fore.pid = pid;
       strcpy(fore.name, name);
       fore.is_back = 0;
       waitpid(-1, NULL, WUNTRACED);
-      //printf("bruh\n");
     }
-    //printf("here\n");
+    
+    else
+    {
+      setpgid(0, 0);
+      if (strcmp(parameters[0], "exit") == 0)
+        exit(1);
+      exec(color, parameters, &nb_par);
+    }
+
     if (strcmp(parameters[0], "exit") == 0)
       exit(1);
     free(parameters);

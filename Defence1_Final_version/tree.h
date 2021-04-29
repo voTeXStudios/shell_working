@@ -2,7 +2,7 @@
 #define TREE_H
 
 void my_error();
-void PrintDirentStruct(char direntName[], int level, int* nb_dir, int* nb_file);
-int tree(int argc, char* argv[]);
+void PrintDirentStruct(char direntName[], char** indent, int* nb_dir, int* nb_file, int *a_triggered, int *nb);
+int _tree(int argc, char* argv[]);
 
 #endif
