@@ -32,7 +32,6 @@ int cd(int argc, char *argv[])
     {
         user = getpwnam(getlogin());
         check = chdir(user->pw_dir);
-        printf("to home\n");
         if (check != 0)
             print_error_cd(argv[0], argv[1]);
     }

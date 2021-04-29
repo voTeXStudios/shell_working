@@ -350,6 +350,7 @@ int main()
     read_command(parameters, &nb_par);
 
     if (nb_par == 0){
+      prompt(color);
       free(parameters);
       continue;
     }
