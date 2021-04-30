@@ -26,7 +26,9 @@
 #include "tree.h"
 #include "job_struct.h"
 //#include "bg.h"
+#include"calc.h"
 #include "grep.h"
+#include "hostname.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -183,7 +185,7 @@ void prompt(char *color)
     }
     f_time = 0;
   }
-  
+
   printf("Vol-Tex-Sh:~");
   if (strcmp(color, "yellow") == 0){
     yellow();
@@ -318,6 +320,14 @@ void exec(char color[], char** parameters, int *nb_par)
       grep(*nb_par, parameters);
       return;
     }
+    else if (strcmp(parameters[0], "calc") == 0){
+      calc(*nb_par);
+      return;
+    }
+    else if (strcmp(parameters[0], "hostname") == 0){
+      get_host_name(*nb_par, parameters);
+      return;
+    }
     else {
       red();
       printf("SHELL : Unknown command. Type help to list all the possible commands\n");
@@ -381,7 +391,7 @@ int main()
       fore.is_back = 0;
       waitpid(-1, NULL, WUNTRACED);
     }
-    
+
     else
     {
       setpgid(0, 0);
