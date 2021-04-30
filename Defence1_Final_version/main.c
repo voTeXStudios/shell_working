@@ -183,7 +183,7 @@ void prompt(char *color)
     }
     f_time = 0;
   }
-  yellow();
+  
   printf("Vol-Tex-Sh:~");
   if (strcmp(color, "yellow") == 0){
     yellow();
@@ -205,7 +205,7 @@ void prompt(char *color)
   }
 
   char* res = pwd(1);
-  printf(" %s$ ", res);
+  printf(" %s", res);
   reset();
 }
 
@@ -214,8 +214,7 @@ void read_command(char **parameters, int *nb_par)
   char *line;
 	int sub_index = 0;
   int i = 0;
-  
-  line = readline("");
+  line = readline("$ ");
   int j  = 0;
 	while(line[j] != '\0')
   {
