@@ -184,6 +184,7 @@ void prompt(char *color)
     f_time = 0;
   }
   
+  yellow();
   printf("Vol-Tex-Sh:~");
   if (strcmp(color, "yellow") == 0){
     yellow();
@@ -331,7 +332,7 @@ int main()
   int nb_par = 0;
   int pid;
   char color[20];
-  //int shellid = getpid();
+  shellid = getpid();
   signal(SIGCHLD, SIG_IGN);
   signal(SIGCHLD, child_sig);
   signal(SIGINT, ctrl_c);
