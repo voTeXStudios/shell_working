@@ -185,8 +185,6 @@ void prompt(char *color)
     }
     f_time = 0;
   }
-
-  printf("Vol-Tex-Sh:~");
   if (strcmp(color, "yellow") == 0){
     yellow();
   }
@@ -205,7 +203,7 @@ void prompt(char *color)
   else{
     cyan();
   }
-
+  printf("Vol-Tex-Sh:~");
   char* res = pwd(1);
   printf(" %s", res);
   reset();
@@ -216,7 +214,7 @@ void read_command(char **parameters, int *nb_par)
   char *line;
 	int sub_index = 0;
   int i = 0;
-  line = readline("$ ");
+  line = readline(" ");
   int j  = 0;
 	while(line[j] != '\0')
   {
@@ -273,6 +271,7 @@ void exec(char color[], char** parameters, int *nb_par)
       return;
     }
     else if (strcmp(parameters[0], "color") == 0){
+      printf("exec\n");
       change_color(parameters[1], color);
       return;
     }
@@ -341,7 +340,7 @@ int main()
   int nb_par = 0;
   int pid;
   char color[20];
-  //int shellid = getpid();
+  shellid = getpid();
   signal(SIGCHLD, SIG_IGN);
   signal(SIGCHLD, child_sig);
   signal(SIGINT, ctrl_c);
@@ -366,6 +365,19 @@ int main()
 
     if (strcmp(parameters[0], "cd") == 0){
       exec(color, parameters, &nb_par);
+      prompt(color);
+      free(parameters);
+      continue;
+
+    }
+    if (strcmp(parameters[0],"calc") == 0){
+      exec(color, parameters, &nb_par);
+      prompt(color);
+      free(parameters);
+      continue;
+    }
+    if (strcmp(parameters[0],"color") == 0){
+      change_color(parameters[1],color);
       prompt(color);
       free(parameters);
       continue;
