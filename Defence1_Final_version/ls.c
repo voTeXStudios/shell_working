@@ -15,18 +15,12 @@ void blue1();
 void reset1();
 void green1();
 
-static int filter(){
-    return 1;
-}
+
 
 void print_error_ls(char *this, char *dir){
     fprintf(stderr, "%s cannot list from %s\n%s\n", this, dir, strerror(errno));
 }
 
-void print_usage_ls(){
-    puts("ERROR:");
-    fprintf(stderr, "Invalid Operand: Type 'help' to know more\n");
-}
 void blue1(){
   printf("\033[0;34m");
 }
@@ -39,36 +33,51 @@ void green1() {
   printf("\033[0;32m");
 }
 
-void print_files_dir(int a_triggered, struct dirent **contents, int content_count)
+void print_files_dir(int a_triggered, DIR* folder, char* root_dir)
 {
 
     struct stat st;
+    struct dirent *entry;
     int stat_check;
     if (a_triggered == 0)
     {
-        for(int i = 0; i<content_count; i++)
+        while ((entry=readdir(folder)))
         {
-            if (contents[i] -> d_name[0] == '.')
+            if (entry->d_name[0] == '.')
                 continue;
-            stat_check = stat(contents[i]->d_name, &st);
+            char new_str[100];
+            strcpy(new_str, root_dir);
+            strcat(new_str, "/");
+            strcat(new_str, entry->d_name);
+            stat_check = stat(new_str, &st);
+            
             if (stat_check == 0 && S_ISDIR(st.st_mode))
                 blue1();
+            
             else if (stat_check == 0 && st.st_mode & S_IXUSR)
                 green1();
-
-            puts(contents[i]->d_name);
+            
+            puts(entry->d_name);
             reset1();
         }
         return;
     }
-    for(int i = 0; i<content_count; i++)
+    while ((entry=readdir(folder)))
     {
-        stat_check = stat(contents[i]->d_name, &st);
-        if ((stat_check == 0 && S_ISDIR(st.st_mode)) || contents[i]->d_name[0] =='.')
+        if (entry->d_name[0] == '.')
+            blue1();
+        char new_str[100];
+        strcpy(new_str, root_dir);
+        strcat(new_str, "/");
+        strcat(new_str, entry->d_name);
+        stat_check = stat(new_str, &st);
+
+        if (stat_check == 0 && S_ISDIR(st.st_mode))
             blue1();
         else if (stat_check == 0 && st.st_mode & S_IXUSR)
             green1();
-        puts(contents[i]->d_name);
+
+        puts(entry->d_name);
         reset1();
     }
     return;
@@ -88,32 +97,57 @@ void check_arguments(int argc, char*argv[], int* a_triggered, int* file_dir_exis
 
 void _list(int argc, char* argv[], int* a_triggered, int* file_dir_exists)
 {
-    int content_count;
-    struct dirent **contents;
-    if (*file_dir_exists == 0)
+    DIR *folder;
+    int counter = 0;
+    int nb_dir_in_args = 0;
+
+    if (argc == 1)
     {
-        if ((content_count = scandir("./", &contents, filter, alphasort)) < 0)
+        folder = opendir("./");
+        if (folder == NULL)
         {
             print_error_ls(argv[0], "./");
             return;
         }
         printf("./:\n");
-        print_files_dir(*a_triggered, contents, content_count);
+        print_files_dir(*a_triggered, folder, "./");
+        return;
+    }
+    if (*file_dir_exists == 0)
+    {
+        folder = opendir(".");
+        if (folder == NULL)
+        {
+            print_usage_ls(argv[0], "./");
+            return;
+        }
+        printf("./:\n");
+        print_files_dir(*a_triggered, folder, "./");
     }
     else
     {
         for (int i = 1; i < argc; i++)
         {
+            if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--all") == 0 || strcmp(argv[i], "-A") == 0)
+                continue;
+            nb_dir_in_args += 1;
+        }
+        
+        for (int i = 1; i < argc; i++)
+        {
             if (strcmp(argv[i], "-a") != 0 && strcmp(argv[i], "--all") != 0 && strcmp(argv[i], "-A") != 0)
             {
-                if ((content_count = scandir(argv[i], &contents, filter, alphasort)) < 0){
-                    print_error_ls(argv[0], argv[i]);
+                folder = opendir(argv[i]); 
+                if (folder == NULL)
+                {
+                    print_usage_ls(argv[0], argv[i]);
                     return;
-                }
+                }          
                 printf("%s:\n", argv[i]);
-                print_files_dir(*a_triggered, contents, content_count);
-                if (i != argc - 1)
+                print_files_dir(*a_triggered, folder, argv[i]);
+                if (counter != nb_dir_in_args - 1)
                     printf("\n");
+                counter += 1;
             }
         }
 
@@ -122,23 +156,9 @@ void _list(int argc, char* argv[], int* a_triggered, int* file_dir_exists)
 }
 
 int _ls(int argc, char *argv[]){
-  printf("ls\n");
     int a_triggered = 0;
     int file_dir_exists = 0;
-    int content_count;
-    struct dirent **contents;
 
-    if (argc == 1)
-    {
-        if ((content_count = scandir("./", &contents, filter, alphasort)) < 0)
-        {
-            print_error_ls(argv[0], "./");
-            return 1;
-        }
-        printf("./:\n");
-        print_files_dir(a_triggered, contents, content_count);
-        return 0;
-    }
     check_arguments(argc, argv, &a_triggered, &file_dir_exists);
     _list(argc, argv, &a_triggered, &file_dir_exists);
     return 0;

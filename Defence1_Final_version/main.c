@@ -185,6 +185,13 @@ void prompt(char *color)
     }
     f_time = 0;
   }
+<<<<<<< HEAD
+=======
+  
+  yellow();
+
+  printf("Vol-Tex-Sh:~");
+>>>>>>> 035a051c264d1f4ef7a6b3198bc88b6fc76e33fe
   if (strcmp(color, "yellow") == 0){
     yellow();
   }
