@@ -206,12 +206,9 @@ void prompt(char *color)
     }
     f_time = 0;
   }
-<<<<<<< HEAD
-=======
 
   yellow();
   printf("Vol-Tex-Sh:~");
->>>>>>> 035a051c264d1f4ef7a6b3198bc88b6fc76e33fe
   if (strcmp(color, "yellow") == 0){
     yellow();
   }
@@ -230,7 +227,7 @@ void prompt(char *color)
   else{
     cyan();
   }
-  printf("Vol-Tex-Sh:~");
+  
   char* res = pwd(1);
   printf(" %s", res);
   reset();
@@ -368,7 +365,7 @@ int main()
   int nb_par = 0;
   int pid;
   char color[20];
-  int shellid = getpid();
+  shellid = getpid();
   signal(SIGCHLD, SIG_IGN);
   signal(SIGCHLD, child_sig);
   signal(SIGINT, ctrl_c);
