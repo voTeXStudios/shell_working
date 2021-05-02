@@ -50,7 +50,7 @@ void populateMenu(){
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit"};
 
-                                  
+
     commands = items;
     default_commands = def_items;
 }
@@ -207,8 +207,6 @@ void prompt(char *color)
     f_time = 0;
   }
 
-  yellow();
-  printf("Vol-Tex-Sh:~");
   if (strcmp(color, "yellow") == 0){
     yellow();
   }
@@ -227,7 +225,7 @@ void prompt(char *color)
   else{
     cyan();
   }
-  
+  printf("Vol-Tex-Sh:~");
   char* res = pwd(1);
   printf(" %s", res);
   reset();
@@ -400,7 +398,18 @@ int main()
       free(parameters);
       continue;
     }
-
+    if (strcmp(parameters[0], commands[6]) == 0 || strcmp(parameters[0], default_commands[6]) == 0){
+      change_color(parameters[1],color);
+      prompt(color);
+      free(parameters);
+      continue;
+    }
+    if (strcmp(parameters[0], commands[18]) == 0 || strcmp(parameters[0], default_commands[18]) == 0){
+      calc(atoi(parameters[1]));
+      prompt(color);
+      free(parameters);
+      continue;
+    }
     pid = fork();
     if (pid != 0)
     {
