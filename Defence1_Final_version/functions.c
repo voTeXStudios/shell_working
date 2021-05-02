@@ -78,7 +78,7 @@ void helppage(int nb_par)
          "                 '-n' - used to number all output lines\n\n"
          "cd_arg                - Changes current working directory into arg\n\n"
          "color_arg             - Changes the color of the prompt to 'arg'\n\n"
-         "echo_str              - Prints out 'str' in the STDOUT\n\n"
+         "echo_str              - Prints out 'str' in the STDOUT or in the file\n\n"
          "help                  - Prints out this manual\n\n"
          "ls_attributes         - Lists out the files directories in your current working directory\n\n"
          "   - attributes: '-a' - used to not ignore entries starting with '.'\n\n"
@@ -91,6 +91,9 @@ void helppage(int nb_par)
          "touch_arg(s)          - Creates file(s) with FileName = arg(s)\n\n"
          "tree_arg              - Prints the directories/sub-directories and files in tree structure\n\n"
          "clear                 - Clears the terminal. Similar to what we have in bash\n\n"
+         "grep_pattern_file     - Used to find certain patterns from a given file/files\n\n"
+         "  - attributes: -E    - Extended regular expression\n\n"
+         "                -i    - Ignore case\n\n"
         );
 }
 
