@@ -187,7 +187,6 @@ void prompt(char *color)
   }
   
   yellow();
-
   printf("Vol-Tex-Sh:~");
   if (strcmp(color, "yellow") == 0){
     yellow();

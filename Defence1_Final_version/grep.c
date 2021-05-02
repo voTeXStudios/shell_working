@@ -93,6 +93,7 @@ void compile_pattern(const char *pat)
 	}
 }
 
+
 /* process --- read lines of text and match against the pattern */
 
 void process(const char *name, FILE *fp)

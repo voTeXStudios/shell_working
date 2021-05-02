@@ -118,7 +118,7 @@ void _list(int argc, char* argv[], int* a_triggered, int* file_dir_exists)
         folder = opendir(".");
         if (folder == NULL)
         {
-            print_usage_ls(argv[0], "./");
+            print_error_ls(argv[0], "./");
             return;
         }
         printf("./:\n");
@@ -140,7 +140,7 @@ void _list(int argc, char* argv[], int* a_triggered, int* file_dir_exists)
                 folder = opendir(argv[i]); 
                 if (folder == NULL)
                 {
-                    print_usage_ls(argv[0], argv[i]);
+                    print_error_ls(argv[0], argv[i]);
                     return;
                 }          
                 printf("%s:\n", argv[i]);
