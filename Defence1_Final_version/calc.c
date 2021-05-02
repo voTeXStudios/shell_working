@@ -14,13 +14,7 @@ void calc(int nb_par)
       fprintf(stderr, "SYNTAX ERROR:\nUsage: calc. Try 'help' for more information.\n");
       return;
     }
-    if(fork() != 0)
-    {
-        wait(NULL);
-        return;
-    }
-    else
-    {
+
         int choice, i, a, b;
         float x, y, result;
         do
@@ -33,8 +27,8 @@ void calc(int nb_par)
             printf("17. Sin(X)           18. Cos(X)              19. Tan(X)                 20. Cosec(X)\n\n");
             printf("21. Cot(X)           22. Sec(X)\n");
             printf("\nChoice: ");
-            scanf("%d", &choice);
-            if(choice == 0) exit(0);
+            scanf("%i",&choice);
+            if(choice == 0) return;
             switch(choice)
             {
                 case 1:
@@ -194,6 +188,7 @@ void calc(int nb_par)
                     printf("\nInvalid Choice!");
             }
         } while(choice);
+
         //getch();
-    }
+
 }
