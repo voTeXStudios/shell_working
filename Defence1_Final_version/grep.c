@@ -123,6 +123,6 @@ void process(const char *name, FILE *fp)
 
 void usage(void)
 {
-	fprintf(stderr, "usage: %s [-i] [-E] pattern [ files ... ]\n", myname);
-	exit(1);
+	fprintf(stderr, "usage: %s [-i] [-E] pattern [ files ... ]\n Type help to know more", myname);
+	return;
 }
