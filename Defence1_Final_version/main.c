@@ -309,7 +309,7 @@ char* read_command(char **parameters, int *nb_par)
   return;
 }*/
 
-int exec(char color[], char** parameters, int *nb_par)
+int exec(char** parameters, int *nb_par)
 {
     if (strcmp(parameters[0], commands[0]) == 0 || strcmp(parameters[0], default_commands[0]) == 0){
       pwd(*nb_par);
@@ -357,7 +357,7 @@ int exec(char color[], char** parameters, int *nb_par)
       return 0;
     }
     else if (strcmp(parameters[0], commands[13]) == 0 || strcmp(parameters[0], default_commands[13]) == 0){
-      echo(*nb_par, parameters);
+      echo(parameters, *nb_par);
       return 0;
     }
     else if (strcmp(parameters[0], commands[15]) == 0 || strcmp(parameters[0], default_commands[15]) == 0){
@@ -444,7 +444,7 @@ int main()
         calc(atoi(parameters[1]));
 
       else if (strcmp(parameters[0], commands[6]) == 0 || strcmp(parameters[0], default_commands[6]) == 0)
-        change_color(parameters[1],color);
+        change_color(parameters[1], color);
       
       else{
         pid = fork();
@@ -456,7 +456,7 @@ int main()
 
         else if (pid == 0){
           setpgid(0, 0);
-          int check = exec(color, parameters, &nb_par);
+          int check = exec(parameters, &nb_par);
 
           if (check != 0){
             red();

@@ -17,6 +17,15 @@
 #include <poll.h>
 #include <syslog.h>
 #include "pipe.h"
+#include "cd.h"
+#include "functions.h"
+#include "ls.h"
+#include "cat.h"
+#include "tree.h"
+#include "hostname.h"
+#include "grep.h"
+#include "echo.h"
+
 
 int check_op(char *str)
 {
@@ -96,7 +105,9 @@ void execute_pipe(char *buff)
             {
                 char *ip[2];
                 char *temp;
-                char st[100][100];
+                char** st = malloc(100 * sizeof(char*));
+                for (size_t i = 0; i < 100; i++)
+                    st[i] = calloc(100, sizeof(char));
                 int k = 0;
                 ip[0] = strtok((*commands)[0], "<");
                 ip[1] = strtok(NULL, "<");
@@ -105,6 +116,7 @@ void execute_pipe(char *buff)
                 while (temp != NULL)
                 {
                     strcpy(st[k++], temp);
+                    //printf("%s\n", temp);
                     temp = strtok(NULL, " \n\t\r");
                 }
 
@@ -128,33 +140,39 @@ void execute_pipe(char *buff)
                 char *token;
                 token = strtok(cmd[0], " \n\t\r");
                 if (strcmp(token, "cd") == 0)
-                    cd(token, present_dir[2]);
+                    cd(k, st);
                 else if (strcmp(token, "pwd") == 0)
-                    pwd();
-                else if (strcmp(token, "pinfo") == 0)
-                    pinfo(token, "pinfo");
-                else if (strcmp(token, "remindme") == 0)
-                    remindme(token);
-                else if (strcmp(token, "clock") == 0)
-                    clock_display(token);
-                else if (strcmp(token, "jobs") == 0)
-                    print_jobs();
-                else if (strcmp(token, "overkill") == 0)
-                    overkill();
+                    pwd(k);
+                else if (strcmp(token, "ls") == 0)
+                    _ls(k, st);
+                else if (strcmp(token, "cat") == 0)
+                    _cat(k, st);
+                else if (strcmp(token, "tree") == 0)
+                    _tree(k, st);
+                else if (strcmp(token, "hostname") == 0)
+                    get_host_name(k, st);
+                else if (strcmp(token, "grep") == 0)
+                    grep(k, st);
+                else if (strcmp(token, "echo") == 0)
+                    echo(st, k);
+                else if (strcmp(token, "help") == 0)
+                    helppage(k);
+                else if (strcmp(token, "mkdir") == 0)
+                    create_dir(k, st);
                 else
                 {
-                    if (execvp(cmd[0], cmd) == -1)
-                    {
-                        dup2(saved_stdout, 1);
-                        printf("no such command\n");
-                    }
+                    dup2(saved_stdout, 1);
+                    printf("No such Command.\n");
                 }
+                free(st);
             }
             if (check_op((*commands)[0]))
             {
                 char *op[2];
                 char *temp;
-                char st[100][100];
+                char** st = malloc(100 * sizeof(char*));
+                for (size_t i = 0; i < 100; i++)
+                    st[i] = calloc(100, sizeof(char));
                 int k = 0;
                 op[0] = strtok((*commands)[0], ">");
                 op[1] = strtok(NULL, ">");
@@ -163,6 +181,7 @@ void execute_pipe(char *buff)
                 while (temp != NULL)
                 {
                     strcpy(st[k++], temp);
+                    //printf("%s\n", temp);
                     temp = strtok(NULL, " \n\t\r");
                 }
 
@@ -180,27 +199,31 @@ void execute_pipe(char *buff)
                     char *token;
                     token = strtok(cmd[0], " \n\t\r");
                     if (strcmp(token, "cd") == 0)
-                        cd(token, present_dir[2]);
+                        cd(k, st);
                     else if (strcmp(token, "pwd") == 0)
-                        pwd();
-                    else if (strcmp(token, "pinfo") == 0)
-                        pinfo(token, "pinfo");
-                    else if (strcmp(token, "remindme") == 0)
-                        remindme(token);
-                    else if (strcmp(token, "clock") == 0)
-                        clock_display(token);
-                    else if (strcmp(token, "jobs") == 0)
-                        print_jobs();
-                    else if (strcmp(token, "overkill") == 0)
-                        overkill();
+                        pwd(k);
+                    else if (strcmp(token, "ls") == 0)
+                        _ls(k, st);
+                    else if (strcmp(token, "cat") == 0)
+                        _cat(k, st);
+                    else if (strcmp(token, "tree") == 0)
+                        _tree(k, st);
+                    else if (strcmp(token, "hostname") == 0)
+                        get_host_name(k, st);
+                    else if (strcmp(token, "grep") == 0)
+                        grep(k, st);
+                    else if (strcmp(token, "echo") == 0)
+                        echo(st, k);
+                    else if (strcmp(token, "help") == 0)
+                        helppage(k);
+                    else if (strcmp(token, "mkdir") == 0)
+                        create_dir(k, st);
                     else
                     {
-                        if (execvp(cmd[0], cmd) == -1)
-                        {
-                            dup2(saved_stdout, 1);
-                            printf("no such command\n");
-                        }
+                        dup2(saved_stdout, 1);
+                        printf("No such Command.\n");
                     }
+                    free(st);
                 }
             }
             else
@@ -208,26 +231,29 @@ void execute_pipe(char *buff)
                 char *token;
                 token = strtok((*commands)[0], " \n\t\r");
                 if (strcmp(token, "cd") == 0)
-                    cd(token, present_dir[2]);
+                    cd(j, (*commands));
                 else if (strcmp(token, "pwd") == 0)
-                    pwd();
-                else if (strcmp(token, "pinfo") == 0)
-                    pinfo(token, "pinfo");
-                else if (strcmp(token, "remindme") == 0)
-                    remindme(token);
-                else if (strcmp(token, "clock") == 0)
-                    clock_display(token);
-                else if (strcmp(token, "jobs") == 0)
-                    print_jobs();
-                else if (strcmp(token, "overkill") == 0)
-                    overkill();
+                    pwd(j);
+                else if (strcmp(token, "ls") == 0)
+                    _ls(j, (*commands));
+                else if (strcmp(token, "cat") == 0)
+                    _cat(j, (*commands));
+                else if (strcmp(token, "tree") == 0)
+                    _tree(j, (*commands));
+                else if (strcmp(token, "hostname") == 0)
+                    get_host_name(j, (*commands));
+                else if (strcmp(token, "grep") == 0)
+                    grep(j, (*commands));
+                else if (strcmp(token, "echo") == 0)
+                    echo((*commands), j);
+                else if (strcmp(token, "help") == 0)
+                    helppage(j);
+                else if (strcmp(token, "mkdir") == 0)
+                    create_dir(j, (*commands));
                 else
                 {
-                    if (execvp((*commands)[0], *commands) == -1)
-                    {
-                        dup2(saved_stdout, 1);
-                        printf("no such command\n");
-                    }
+                    dup2(saved_stdout, 1);
+                    printf("No such Command.\n");
                 }
             }
             exit(EXIT_FAILURE);
