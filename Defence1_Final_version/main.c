@@ -402,7 +402,7 @@ int main()
     {
       c = check_pipe(buf);
       check_red = check_redirection(buf);
-
+      
       if (c == 1)
       {
         execute_pipe(buf);
@@ -440,7 +440,7 @@ int main()
 
       else if (strcmp(parameters[0], commands[24]) == 0 || strcmp(parameters[0], default_commands[24]) == 0)
         play();
-
+      
       // Call the functions which need forking.
       else{
         pid = fork();
@@ -480,6 +480,7 @@ int main()
         }
       }
     }
+    
     free(parameters);
     prompt(color);
   }
