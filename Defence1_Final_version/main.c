@@ -30,6 +30,9 @@
 #include "grep.h"
 #include "hostname.h"
 #include "alias.h"
+#include "echo.h"
+#include "redirection.h"
+#include "pipe.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -75,6 +78,35 @@ void populateMenu(){
     }
 }*/
 
+
+int check_redirection(char* token)
+{
+  int i;
+  int l = strlen(token);
+
+  for (i = 0; i < l; i++)
+  {
+    if (token[i] == '<' || (token[i] == '>' && token[i + 1] != '>'))
+      return 2;
+    if (token[i] == '>' && token[i + 1] == '>')
+      return 3;
+  }
+  return 0;
+  
+}
+
+int check_pipe(char* token)
+{
+  int i;
+  int l = strlen(token);
+  for (i = 0; i < l; i++)
+  {
+    if (token[i] == '|')
+      return 1;
+  }
+  return 0;
+  
+}
 void print_jobs(int back_count, job back[])
 {
     int i;
@@ -226,20 +258,33 @@ void prompt(char *color)
   else{
     cyan();
   }
- 
-  char* res = pwd(1);
-  printf(" %s", res);
+
+  printf(" ");
+  pwd(1);
   reset();
 }
 
-void read_command(char **parameters, int *nb_par)
+char* read_command(char **parameters, int *nb_par)
 {
   char *line;
-	int sub_index = 0;
+  char* token;
+  char* temp = malloc(200 * sizeof(char));
   int i = 0;
   line = readline("$ ");
-  int j  = 0;
-	while(line[j] != '\0')
+  strcpy(temp, line);
+  token = strtok(line, " \n\t\r");
+
+  while (token != NULL)
+  {
+    strcpy(parameters[i++], token);
+    token = strtok(NULL, " \n\t\r");
+  }
+  *nb_par = i;
+
+  return temp;
+}
+  //int j  = 0;
+	/*while(line[j] != '\0')
   {
     if (line[j] == ' ' && sub_index != 0)
     {
@@ -262,99 +307,82 @@ void read_command(char **parameters, int *nb_par)
   }
   *nb_par = i;
   return;
-}
+}*/
 
-void exec(char color[], char** parameters, int *nb_par)
+int exec(char color[], char** parameters, int *nb_par)
 {
-  if (*nb_par != 0)
-  {
-    if (strcmp(parameters[0], commands[0]) == 0){
-      char* res = pwd(*nb_par);
-      printf("%s\n", res);
-      return;
+    if (strcmp(parameters[0], commands[0]) == 0 || strcmp(parameters[0], default_commands[0]) == 0){
+      pwd(*nb_par);
+      printf("\n");
+      return 0;
     }
     else if (strcmp(parameters[0], commands[1]) == 0 || strcmp(parameters[0], default_commands[1]) == 0){
       helppage(*nb_par);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[2]) == 0 || strcmp(parameters[0], default_commands[2]) == 0){
       create_dir(*nb_par, parameters);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[3]) == 0 || strcmp(parameters[0], default_commands[3]) == 0){
       touch(parameters, *nb_par);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[4]) == 0 || strcmp(parameters[0], default_commands[4]) == 0){
       mv(parameters[1], parameters[2]);
-      return;
+      return 0;
     }
     else if(strcmp(parameters[0], commands[5]) == 0 || strcmp(parameters[0], default_commands[5]) == 0){
       remove_dir(*nb_par, parameters);
-      return;
-    }
-    else if (strcmp(parameters[0], commands[6]) == 0 || strcmp(parameters[0], default_commands[6]) == 0){
-      change_color(parameters[1], color);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[7]) == 0 || strcmp(parameters[0], default_commands[7]) == 0){
       clear(*nb_par);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[8]) == 0 || strcmp(parameters[0], default_commands[8]) == 0){
       _tree(*nb_par, parameters);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[9]) == 0 || strcmp(parameters[0], default_commands[9]) == 0){
       _delete(*nb_par, parameters);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[10]) == 0 || strcmp(parameters[0], default_commands[10]) == 0){
       _cat(*nb_par, parameters);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[11]) == 0 || strcmp(parameters[0], default_commands[11]) == 0){
       _ls(*nb_par, parameters);
-      return;
-    }
-    else if (strcmp(parameters[0], commands[12]) == 0 || strcmp(parameters[0], default_commands[12]) == 0){
-      cd(*nb_par, parameters);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[13]) == 0 || strcmp(parameters[0], default_commands[13]) == 0){
       echo(*nb_par, parameters);
-      return;
+      return 0;
     }
-    /*else if (strcmp(parameters[0], commands[14]) == 0 || strcmp(parameters[0], default_commands[14]) == 0){
-      bg(parameters[1], *nb_par, back_count, back);
-      return;
-    }*/
     else if (strcmp(parameters[0], commands[15]) == 0 || strcmp(parameters[0], default_commands[15]) == 0){
       sleep_fun(atoi(parameters[1]));
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[16]) == 0 || strcmp(parameters[0], default_commands[16]) == 0){
       print_jobs(back_count, back);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[17]) == 0 || strcmp(parameters[0], default_commands[17]) == 0){
       grep(*nb_par, parameters);
-      return;
-    }
-    else if (strcmp(parameters[0], commands[18]) == 0 || strcmp(parameters[0], default_commands[18]) == 0){
-      calc(*nb_par);
-      return;
+      return 0;
     }
     else if (strcmp(parameters[0], commands[19]) == 0 || strcmp(parameters[0], default_commands[19]) == 0){
       get_host_name(*nb_par, parameters);
-      return;
+      return 0;
     }
-    else {
+    /*else {
       red();
       printf("SHELL : Unknown command. Type help to list all the possible commands\n");
       return;
-    }
-  }
+    }*/
+    return 1;
+  
 }
 int main()
 {
@@ -364,6 +392,10 @@ int main()
   int nb_par = 0;
   int pid;
   char color[20];
+  char** parameters;
+  char* buf;
+  int check_red;
+  int c;
   shellid = getpid();
   signal(SIGCHLD, SIG_IGN);
   signal(SIGCHLD, child_sig);
@@ -375,13 +407,88 @@ int main()
   while (1)
   {
     childpid = -1;
-    char** parameters = malloc(500 * sizeof(char*));
+    parameters = malloc(500 * sizeof(char*));
+    
     for (size_t i = 0; i < 500; i++)
       parameters[i] = calloc(100, sizeof(char));
-    //prompt(color);
-    read_command(parameters, &nb_par);
 
-    if (nb_par == 0){
+    buf = read_command(parameters, &nb_par);
+
+    if (nb_par > 0)
+    {
+      c = check_pipe(buf);
+      check_red = check_redirection(buf);
+
+      if (c == 1)
+      {
+        execute_pipe(buf);
+        free(buf);
+      }
+      
+      else if (check_red == 2 || check_red == 3)
+      {
+        redirection(buf, check_red-2);
+        free(buf);
+      }
+
+      else if (strcmp(parameters[0], commands[12]) == 0 || strcmp(parameters[0], default_commands[12]) == 0)
+        cd(nb_par, parameters);
+      
+      else if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
+        exit(1);
+
+      else if (strcmp(parameters[0], commands[20]) == 0 || strcmp(parameters[0], default_commands[20]) == 0)
+        alias(nb_par, parameters, commands);
+
+      else if (strcmp(parameters[0], commands[18]) == 0 || strcmp(parameters[0], default_commands[18]) == 0)
+        calc(atoi(parameters[1]));
+
+      else if (strcmp(parameters[0], commands[6]) == 0 || strcmp(parameters[0], default_commands[6]) == 0)
+        change_color(parameters[1],color);
+      
+      else{
+        pid = fork();
+
+        if (pid < 0){
+          printf("Error: Fork failed\n");
+          return 1;
+        }
+
+        else if (pid == 0){
+          setpgid(0, 0);
+          int check = exec(color, parameters, &nb_par);
+
+          if (check != 0){
+            red();
+            printf("SHELL: Unknown command. Type help to know more");
+            return 1;
+          }
+        }
+        else
+        {
+          childpid = pid;
+          char name[100];
+          strcpy(name, parameters[0]);
+
+          for (int i = 0; i < nb_par - 1; i++)
+          {
+            strcat(name, " ");
+            strcat(name, parameters[i]);
+          }
+
+          fore.pid = pid;
+          strcpy(fore.name, name);
+          fore.is_back = 0;
+          waitpid(-1, NULL, WUNTRACED);
+          
+        }
+      }
+    }
+    free(parameters);
+    prompt(color);
+  }
+}
+    /*if (nb_par > 0){
       prompt(color);
       free(parameters);
       continue;
@@ -442,6 +549,4 @@ int main()
 
     if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
       exit(1);
-    free(parameters);
-  }
-}
+    free(parameters);*/

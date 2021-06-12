@@ -28,7 +28,8 @@ void calc(int nb_par)
             printf("21. Cot(X)           22. Sec(X)\n");
             printf("\nChoice: ");
             scanf("%i",&choice);
-            if(choice == 0) return;
+            if(choice == 0) break;
+            if (choice < 0 || choice > 22) continue;
             switch(choice)
             {
                 case 1:

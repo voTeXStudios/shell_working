@@ -17,7 +17,7 @@ void print_usage_cd()
     fprintf(stderr, "Too many arguments: Type 'help' to know more\n");
     return;
 }
-int cd(int argc, char *argv[])
+void cd(int argc, char *argv[])
 {
     errno = 0;
     struct passwd *user;
@@ -37,5 +37,4 @@ int cd(int argc, char *argv[])
     }
     else
         print_usage_cd();
-    return 0;
 }

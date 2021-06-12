@@ -155,11 +155,10 @@ void _list(int argc, char* argv[], int* a_triggered, int* file_dir_exists)
 
 }
 
-int _ls(int argc, char *argv[]){
+void _ls(int argc, char *argv[]){
     int a_triggered = 0;
     int file_dir_exists = 0;
 
     check_arguments(argc, argv, &a_triggered, &file_dir_exists);
     _list(argc, argv, &a_triggered, &file_dir_exists);
-    return 0;
 }

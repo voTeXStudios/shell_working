@@ -9,7 +9,7 @@
 #include "functions.h"
 #include <dirent.h>
 
-char* pwd(int nb_par) // shows the current working dir, no errors to handle
+void pwd(int nb_par) // shows the current working dir, no errors to handle
 {
   if(nb_par > 1)
   {
@@ -21,9 +21,9 @@ char* pwd(int nb_par) // shows the current working dir, no errors to handle
   if (current_working_dir == NULL)
   {
     fprintf(stderr, "Error trying to get file\n");
-    return NULL;
+    return;
   }
-  return current_working_dir;
+  printf("%s", current_working_dir);
 }
 
 void create_dir(int nb_par, char** dirname) //this is the mkdir fn, handles errors
@@ -164,7 +164,7 @@ void remove_dir(int nb_par, char** dirname) //this is the rmdir fn with "-f", ha
   }
 }
 
-void _append(int nb_par, char** par, int track)
+/*void _append(int nb_par, char** par, int track)
 {
   FILE* file;
   char *des = calloc(100, sizeof(char));
@@ -255,7 +255,7 @@ void echo(int nb_par, char** par)
       _append(nb_par, par, track);
   }
   return;
-}
+}*/
 
 void clear(int nb_par)
 {
