@@ -298,7 +298,7 @@ int exec(char** parameters, int *nb_par)
       return 0;
     }
     else if (strcmp(parameters[0], commands[1]) == 0 || strcmp(parameters[0], default_commands[1]) == 0){
-      helppage(*nb_par, parameters);
+      helppage(*nb_par, parameters, commands, default_commands);
       return 0;
     }
     else if (strcmp(parameters[0], commands[2]) == 0 || strcmp(parameters[0], default_commands[2]) == 0){
