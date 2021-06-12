@@ -149,6 +149,7 @@ void helppage(int nb_par, char **fns)
       printf(
               "\nUSAGE : tree\n\n"
               "tree - Prints the directories/sub-directories and files in tree structure.\n\n"
+              "     - attributes: '-a' - used to include hidden files.\n\n"
             );
     }
     else if (strcmp(fns[1], commands1[9]) == 0 || strcmp(fns[1], default_commands1[9]) == 0)
@@ -163,6 +164,8 @@ void helppage(int nb_par, char **fns)
       printf(
               "\nUSAGE : cat [attributes] [file_name]s\n\n"
               "cat - Prints out contents of the file(s) with FileName = file_name.\n\n"
+              "    - attributes: '-n' -Prints the line number.\n\n"
+              "                  '-E' -Prints $ before each line.\n\n"
             );
     }
     else if (strcmp(fns[1], commands1[11]) == 0 || strcmp(fns[1], default_commands1[11]) == 0)
@@ -170,14 +173,14 @@ void helppage(int nb_par, char **fns)
       printf(
               "\nUSAGE : ls [attributes] [file_name]s\n\n"
               "ls - Lists out the files directories in your current working directory.\n\n"
-              "   - attributes: '-a' - used to include entries starting with '.'\n\n"
+              "   - attributes: '-a' - used to include hidden files.\n\n"
             );
     }
     else if (strcmp(fns[1], commands1[13]) == 0 || strcmp(fns[1], default_commands1[13]) == 0)
     {
       printf(
               "\nUSAGE : echo [attributes] [file_name]s\n\n"
-              "echo -  Prints out 'str' in the STDOUT or in the file.\n\n"
+              "echo -  Prints out 'str' in a file discriptor.\n\n"
             ); //change this for later
     }
     else if (strcmp(fns[1], commands1[15]) == 0 || strcmp(fns[1], default_commands1[15]) == 0)
@@ -216,7 +219,7 @@ void helppage(int nb_par, char **fns)
     {
       printf(
               "\nUSAGE : cd [dir_name]\n\n"
-              "cat -  Changes current working directory into [dir_name].\n\n"
+              "cd -  Changes current working directory into [dir_name].\n\n"
             );
     }
     else if (strcmp(fns[1], commands1[21]) == 0 || strcmp(fns[1], default_commands1[21]) == 0)
@@ -252,20 +255,25 @@ void helppage(int nb_par, char **fns)
     {
       printf(
               "\nUSAGE : setenv\n\n"
-              "setenv -  TO BE DETERMINED.\n\n"
+              "setenv -  Sets the value of an environment variable.\n\n"
             );
     }
     else if (strcmp(fns[1], commands1[23]) == 0 || strcmp(fns[1], default_commands1[23]) == 0)
       {
         printf(
                 "\nUSAGE : unsetenv\n\n"
-                "unsetenv -  TO BE DETERMINED.\n\n"
+                "unsetenv -  Unsets the value of the environment variable.\n\n"
               );
       }
-    else
-    {
-      printf("%s : command not found\n", fns[1]);
+    else if (strcmp(fns[1], commands1[24]) == 0 || strcmp(fns[1], default_commands1[24]) == 0){
+      printf(
+              "\nUSAGE : tictactoe\n\n"
+              "tictactoe - Two player game.\n\n"
+            );
     }
+    else
+      printf("%s : command not found\n", fns[1]);
+    
     return;
 }
 
