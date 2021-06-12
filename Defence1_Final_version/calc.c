@@ -40,8 +40,10 @@ void calc(int nb_par)
         }
 
         
-        if (choice == 0) return;
-        if (choice < 0 || choice > 22) continue;
+        if (choice == 0) 
+            return;
+        if (choice < 0 || choice > 22) 
+            continue;
         switch(choice)
         {
             case 1:
