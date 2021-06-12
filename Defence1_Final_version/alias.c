@@ -149,6 +149,24 @@ void alias(int nb_par, char** parameters, const char** commands)
       printf("Succesfully set an alias for %s : %s\n", parameters[3], parameters[1]);
       return;
     }
+    else if(strcmp(parameters[3], "setenv") == 0)
+    {
+      commands[22] = strdup(parameters[1]);
+      printf("Succesfully set an alias for %s : %s\n", parameters[3], parameters[1]);
+      return;
+    }
+    else if(strcmp(parameters[3], "unsetenv") == 0)
+    {
+      commands[23] = strdup(parameters[1]);
+      printf("Succesfully set an alias for %s : %s\n", parameters[3], parameters[1]);
+      return;
+    }
+    else if(strcmp(parameters[3], "tictactoe") == 0)
+    {
+      commands[24] = strdup(parameters[1]);
+      printf("Succesfully set an alias for %s : %s\n", parameters[3], parameters[1]);
+      return;
+    }
     else
     {
       printf("Such a command does not exist\n");

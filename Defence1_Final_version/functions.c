@@ -9,30 +9,6 @@
 #include "functions.h"
 #include <dirent.h>
 
-//////////////////////////////////////////////////////
-const char** commands1 = NULL;
-
-const char** default_commands1 = NULL;
-void populateMenu1()
-{
-    static const char *items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
-                                  "color", "clear", "tree", "rm", "cat", "ls",
-                                  "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
-
-
-    static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
-                                  "color", "clear", "tree", "rm", "cat", "ls",
-                                  "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
-
-
-    commands1 = items;
-    default_commands1 = def_items;
-}
-
-///////////////////////////////////////////////////////
-
 void pwd(int nb_par) // shows the current working dir, no errors to handle
 {
     if(nb_par > 1)
@@ -86,9 +62,8 @@ void touch(char** filename, int nb_par) //creates files, handles errors
     }
 }
 
-void helppage(int nb_par, char **fns)
+void helppage(int nb_par, char **fns, const char **commands1, const char **default_commands1)
 {
-    populateMenu1();
     if(nb_par < 2)
     {
       fprintf(stderr, "SYNTAX ERROR:\nUsage: help [fn_name]. Try 'help help' for more information.\n");
@@ -269,12 +244,12 @@ void helppage(int nb_par, char **fns)
     else if (strcmp(fns[1], commands1[24]) == 0 || strcmp(fns[1], default_commands1[24]) == 0){
       printf(
               "\nUSAGE : tictactoe\n\n"
-              "tictactoe - Two player game.\n\n"
+              "tictactoe - Launches a game of TicTacToe.\n\n"
             );
     }
     else
       printf("%s : command not found\n", fns[1]);
-    
+
     return;
 }
 
