@@ -206,12 +206,15 @@ void _list(int argc, char* argv[], int* a_triggered, int* l_triggered, int* file
         {
             if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--all") == 0 || strcmp(argv[i], "-A") == 0)
                 continue;
+            else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "-L") == 0)
+                continue;
             nb_dir_in_args += 1;
         }
         
         for (int i = 1; i < argc; i++)
         {
-            if (strcmp(argv[i], "-a") != 0 && strcmp(argv[i], "--all") != 0 && strcmp(argv[i], "-A") != 0)
+            if (strcmp(argv[i], "-a") != 0 && strcmp(argv[i], "--all") != 0 && strcmp(argv[i], "-A") != 0 
+                && strcmp(argv[i], "-l") != 0 && strcmp(argv[i], "-L") != 0)
             {
                 folder = opendir(argv[i]); 
                 if (folder == NULL)
