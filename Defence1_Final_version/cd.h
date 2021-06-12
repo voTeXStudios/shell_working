@@ -3,6 +3,6 @@
 
 void print_error_cd(char *this, char *dirname);
 void print_usage_cd();
-int cd(int argc, char *argv[]);
+void cd(int argc, char *argv[]);
 
 #endif
