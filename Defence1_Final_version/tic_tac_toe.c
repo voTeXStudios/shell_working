@@ -74,8 +74,6 @@ void play()
 			continue;
 
 		}
-		if (check != 1)
-			return;
 			
 		if (index == 0)
 			return;
