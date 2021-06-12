@@ -39,8 +39,7 @@ extern int __chmod(const char *path, mode_t mode);
  *
  * This is for UNIX03 only.
  */
-int
-chmod(const char *path, mode_t mode)
+int chmod(const char *path, mode_t mode)
 {
 	int res = __chmod(path, mode);
 

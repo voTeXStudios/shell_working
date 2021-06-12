@@ -14,7 +14,7 @@ void pwd(int nb_par) // shows the current working dir, no errors to handle
   if(nb_par > 1)
   {
     fprintf(stderr, "SYNTAX ERROR:\nUsage: pwd. Try 'help' for more information.\n");
-    return NULL;
+    return;
   }
   char buff[FILENAME_MAX];
   char* current_working_dir = getcwd(buff, FILENAME_MAX);

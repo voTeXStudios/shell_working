@@ -34,6 +34,7 @@
 #include "redirection.h"
 #include "pipe.h"
 #include "env.h"
+#include "tic_tac_toe.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -46,13 +47,15 @@ void populateMenu(){
     static const char *items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv", 
+                                  "tictactoe"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
+                                  "tictactoe"};
 
 
     commands = items;
@@ -427,7 +430,8 @@ int main()
       else if (strcmp(parameters[0], commands[23]) == 0 || strcmp(parameters[0], default_commands[23]) == 0)
         unset_env(parameters, nb_par);
 
-
+      else if (strcmp(parameters[0], commands[24]) == 0 || strcmp(parameters[0], default_commands[24]) == 0)
+        play();
       // Call the functions which need forking.
       else{
         pid = fork();
