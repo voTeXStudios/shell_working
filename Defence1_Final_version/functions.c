@@ -174,6 +174,7 @@ void helppage(int nb_par, char **fns)
               "\nUSAGE : ls [attributes] [file_name]s\n\n"
               "ls - Lists out the files directories in your current working directory.\n\n"
               "   - attributes: '-a' - used to include hidden files.\n\n"
+              "                 '-l' - used to print stats of the files"
             );
     }
     else if (strcmp(fns[1], commands1[13]) == 0 || strcmp(fns[1], default_commands1[13]) == 0)
