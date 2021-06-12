@@ -34,7 +34,6 @@
 #include "redirection.h"
 #include "pipe.h"
 #include "env.h"
-#include "tic_tac_toe.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -47,15 +46,13 @@ void populateMenu(){
     static const char *items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv", 
-                                  "tictactoe"};
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe"};
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
 
 
     commands = items;
@@ -96,7 +93,7 @@ int check_redirection(char* token)
       return 3;
   }
   return 0;
-  
+
 }
 
 int check_pipe(char* token)
@@ -109,7 +106,7 @@ int check_pipe(char* token)
       return 1;
   }
   return 0;
-  
+
 }
 void print_jobs(int back_count, job back[])
 {
@@ -298,7 +295,7 @@ int exec(char** parameters, int *nb_par)
       return 0;
     }
     else if (strcmp(parameters[0], commands[1]) == 0 || strcmp(parameters[0], default_commands[1]) == 0){
-      helppage(*nb_par);
+      helppage(*nb_par, parameters);
       return 0;
     }
     else if (strcmp(parameters[0], commands[2]) == 0 || strcmp(parameters[0], default_commands[2]) == 0){
@@ -310,7 +307,7 @@ int exec(char** parameters, int *nb_par)
       return 0;
     }
     else if (strcmp(parameters[0], commands[4]) == 0 || strcmp(parameters[0], default_commands[4]) == 0){
-      mv(parameters[1], parameters[2]);
+      mv(*nb_par, parameters);
       return 0;
     }
     else if(strcmp(parameters[0], commands[5]) == 0 || strcmp(parameters[0], default_commands[5]) == 0){
@@ -342,7 +339,7 @@ int exec(char** parameters, int *nb_par)
       return 0;
     }
     else if (strcmp(parameters[0], commands[15]) == 0 || strcmp(parameters[0], default_commands[15]) == 0){
-      sleep_fun(atoi(parameters[1]));
+      sleep_fun(*nb_par, parameters);
       return 0;
     }
     else if (strcmp(parameters[0], commands[16]) == 0 || strcmp(parameters[0], default_commands[16]) == 0){
@@ -358,7 +355,7 @@ int exec(char** parameters, int *nb_par)
       return 0;
     }
     return 1;
-  
+
 }
 int main()
 {
@@ -384,7 +381,7 @@ int main()
   {
     childpid = -1;
     parameters = malloc(500 * sizeof(char*));
-    
+
     for (size_t i = 0; i < 500; i++)
       parameters[i] = calloc(100, sizeof(char));
 
@@ -400,18 +397,18 @@ int main()
         execute_pipe(buf);
         free(buf);
       }
-      
+
       else if (check_red == 2 || check_red == 3)
       {
         redirection(buf, check_red-2);
         free(buf);
       }
-      
 
-      /// All the functions which do not need forking. 
+
+      /// All the functions which do not need forking.
       else if (strcmp(parameters[0], commands[12]) == 0 || strcmp(parameters[0], default_commands[12]) == 0)
         cd(nb_par, parameters);
-      
+
       else if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
         exit(1);
 
@@ -425,13 +422,12 @@ int main()
         change_color(parameters[1], color);
 
       else if (strcmp(parameters[0], commands[22]) == 0 || strcmp(parameters[0], default_commands[22]) == 0)
-        set_env(parameters, nb_par);    
-      
+        set_env(parameters, nb_par);
+
       else if (strcmp(parameters[0], commands[23]) == 0 || strcmp(parameters[0], default_commands[23]) == 0)
         unset_env(parameters, nb_par);
 
-      else if (strcmp(parameters[0], commands[24]) == 0 || strcmp(parameters[0], default_commands[24]) == 0)
-        play();
+
       // Call the functions which need forking.
       else{
         pid = fork();
@@ -447,7 +443,7 @@ int main()
 
           if (check != 0){
             red();
-            printf("SHELL: Unknown command. Type help to know more");
+            printf("SHELL: Unknown command. Type help to know more\n");
             return 1;
           }
         }
@@ -467,7 +463,7 @@ int main()
           strcpy(fore.name, name);
           fore.is_back = 0;
           waitpid(-1, NULL, WUNTRACED);
-          
+
         }
       }
     }

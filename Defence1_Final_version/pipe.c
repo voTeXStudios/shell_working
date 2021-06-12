@@ -155,8 +155,8 @@ void execute_pipe(char *buff)
                     grep(k, st);
                 else if (strcmp(token, "echo") == 0)
                     echo(st, k);
-                else if (strcmp(token, "help") == 0)
-                    helppage(k);
+                /*else if (strcmp(token, "help") == 0)
+                    helppage(k);*/
                 else if (strcmp(token, "mkdir") == 0)
                     create_dir(k, st);
                 else
@@ -214,8 +214,8 @@ void execute_pipe(char *buff)
                         grep(k, st);
                     else if (strcmp(token, "echo") == 0)
                         echo(st, k);
-                    else if (strcmp(token, "help") == 0)
-                        helppage(k);
+                    /*else if (strcmp(token, "help") == 0)
+                        helppage(k);*/
                     else if (strcmp(token, "mkdir") == 0)
                         create_dir(k, st);
                     else
@@ -246,8 +246,8 @@ void execute_pipe(char *buff)
                     grep(j, (*commands));
                 else if (strcmp(token, "echo") == 0)
                     echo((*commands), j);
-                else if (strcmp(token, "help") == 0)
-                    helppage(j);
+                /*else if (strcmp(token, "help") == 0)
+                    helppage(j);*/
                 else if (strcmp(token, "mkdir") == 0)
                     create_dir(j, (*commands));
                 else

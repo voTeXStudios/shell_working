@@ -9,108 +9,285 @@
 #include "functions.h"
 #include <dirent.h>
 
+//////////////////////////////////////////////////////
+const char** commands1 = NULL;
+
+const char** default_commands1 = NULL;
+void populateMenu1()
+{
+    static const char *items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
+                                  "color", "clear", "tree", "rm", "cat", "ls",
+                                  "cd", "echo", "bg", "sleep", "job", "grep",
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
+
+
+    static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
+                                  "color", "clear", "tree", "rm", "cat", "ls",
+                                  "cd", "echo", "bg", "sleep", "job", "grep",
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
+
+
+    commands1 = items;
+    default_commands1 = def_items;
+}
+
+///////////////////////////////////////////////////////
+
 void pwd(int nb_par) // shows the current working dir, no errors to handle
 {
-  if(nb_par > 1)
-  {
-    fprintf(stderr, "SYNTAX ERROR:\nUsage: pwd. Try 'help' for more information.\n");
-    return;
-  }
-  char buff[FILENAME_MAX];
-  char* current_working_dir = getcwd(buff, FILENAME_MAX);
-  if (current_working_dir == NULL)
-  {
-    fprintf(stderr, "Error trying to get file\n");
-    return;
-  }
-  printf("%s", current_working_dir);
+    if(nb_par > 1)
+    {
+      fprintf(stderr, "SYNTAX ERROR:\nUsage: pwd. Try 'help pwd' for more information.\n");
+      return;
+    }
+    char buff[FILENAME_MAX];
+    char* current_working_dir = getcwd(buff, FILENAME_MAX);
+    if (current_working_dir == NULL)
+    {
+      fprintf(stderr, "Error trying to get file\n");
+      return;
+    }
+    printf("%s", current_working_dir);
 }
 
 void create_dir(int nb_par, char** dirname) //this is the mkdir fn, handles errors
 {
-  if(nb_par == 1)
-    fprintf(stderr, "SYNTAX ERROR:\nUsage: mkdir [dir_name]. Try 'help' for more information.\n");
+    if(nb_par == 1)
+      fprintf(stderr, "SYNTAX ERROR:\nUsage: mkdir [dir_name]. Try 'help mkdir' for more information.\n");
 
-  for (int i = 1; i < nb_par; i++)
-  {
-    int check;
-    check = mkdir(dirname[i],0777);
-    if (check)
+    for (int i = 1; i < nb_par; i++)
     {
-      fprintf(stderr, "There was an error creating the folder, maybe it already exists\n");
-      return;
+      int check;
+      check = mkdir(dirname[i],0777);
+      if (check)
+      {
+        fprintf(stderr, "There was an error creating the folder, maybe it already exists\n");
+        return;
+      }
     }
-  }
 }
 
 void touch(char** filename, int nb_par) //creates files, handles errors
 {
-  if(nb_par == 1)
-  {
-    fprintf(stderr, "SYNTAX ERROR:\nUsage: touch [file_name]. Try 'help' for more information.\n");
-    return;
-  }
-  for (int i = 1; i < nb_par; i++)
-  {
-    FILE *file = fopen(filename[i], "w+");
-    if(file == NULL)
+    if(nb_par == 1)
     {
-      fprintf(stderr, "There was an error creating the file\n");
+      fprintf(stderr, "SYNTAX ERROR:\nUsage: touch [file_name]. Try 'help touch' for more information.\n");
       return;
     }
-    fclose(file);
-  }
+    for (int i = 1; i < nb_par; i++)
+    {
+      FILE *file = fopen(filename[i], "w+");
+      if(file == NULL)
+      {
+        fprintf(stderr, "There was an error creating the file\n");
+        return;
+      }
+      fclose(file);
+    }
 }
 
-void helppage(int nb_par)
+void helppage(int nb_par, char **fns)
 {
-  if(nb_par > 1)
-  {
-    fprintf(stderr, "SYNTAX ERROR:\nUsage: help. Try 'help' for more information.\n");
+    populateMenu1();
+    if(nb_par < 2)
+    {
+      fprintf(stderr, "SYNTAX ERROR:\nUsage: help [fn_name]. Try 'help help' for more information.\n");
+      return;
+    }
+    if (strcmp(fns[1], commands1[0]) == 0 || strcmp(fns[1], default_commands1[0]) == 0)
+    {
+      printf(
+             "\nUSAGE : pwd\n\n"
+             "pwd - Prints out your current working directory.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[1]) == 0 || strcmp(fns[1], default_commands1[1]) == 0)
+    {
+      printf(
+              "\nUSAGE : help [fn_name]\n\n"
+              "help - Prints out the usage of the fn_name entered.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[2]) == 0 || strcmp(fns[1], default_commands1[2]) == 0)
+    {
+      printf(
+              "\nUSAGE : mkdir [dir_name]s\n\n"
+              "mkdir - Creates a directory or multiple directories with DirName = dir_name.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[3]) == 0 || strcmp(fns[1], default_commands1[3]) == 0)
+    {
+      printf(
+              "\nUSAGE : touch [file_name]s\n\n"
+              "touch - Creates file(s) with FileName = file_name.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[4]) == 0 || strcmp(fns[1], default_commands1[4]) == 0)
+    {
+      printf(
+              "\nUSAGE : mv [file_name1] [file_name2/dir_name]\n\n"
+              "mv - Rename [file_name1] to [file_name2] or moves [file_name1] to [dir_name].\n\n"
+            );
+    }
+    else if(strcmp(fns[1], commands1[5]) == 0 || strcmp(fns[1], default_commands1[5]) == 0)
+    {
+      printf(
+              "\nUSAGE : rmdir [attributes] [dir_name]\n\n"
+              "rmdir - Removes the directory or multiple directories with DirName = arg(s).\n\n"
+              "      - attributes: '-f' - used to delete non-empty directories.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[7]) == 0 || strcmp(fns[1], default_commands1[7]) == 0)
+    {
+      printf(
+              "\nUSAGE : clear\n\n"
+              "clear - Clears the terminal.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[8]) == 0 || strcmp(fns[1], default_commands1[8]) == 0)
+    {
+      printf(
+              "\nUSAGE : tree\n\n"
+              "tree - Prints the directories/sub-directories and files in tree structure.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[9]) == 0 || strcmp(fns[1], default_commands1[9]) == 0)
+    {
+      printf(
+              "\nUSAGE : rm [file_name]s\n\n"
+              "rm - Removes the file(s) with FileName = file_name.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[10]) == 0 || strcmp(fns[1], default_commands1[10]) == 0)
+    {
+      printf(
+              "\nUSAGE : cat [attributes] [file_name]s\n\n"
+              "cat - Prints out contents of the file(s) with FileName = file_name.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[11]) == 0 || strcmp(fns[1], default_commands1[11]) == 0)
+    {
+      printf(
+              "\nUSAGE : ls [attributes] [file_name]s\n\n"
+              "ls - Lists out the files directories in your current working directory.\n\n"
+              "   - attributes: '-a' - used to include entries starting with '.'\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[13]) == 0 || strcmp(fns[1], default_commands1[13]) == 0)
+    {
+      printf(
+              "\nUSAGE : echo [attributes] [file_name]s\n\n"
+              "echo -  Prints out 'str' in the STDOUT or in the file.\n\n"
+            ); //change this for later
+    }
+    else if (strcmp(fns[1], commands1[15]) == 0 || strcmp(fns[1], default_commands1[15]) == 0)
+    {
+      printf(
+              "\nUSAGE : sleep [number]\n\n"
+              "sleep -  Pauses for [number] seconds.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[16]) == 0 || strcmp(fns[1], default_commands1[16]) == 0)
+    {
+      printf(
+              "\nUSAGE : job\n\n"
+              "job -  Prints all the background processes.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[17]) == 0 || strcmp(fns[1], default_commands1[17]) == 0)
+    {
+      printf(
+              "\nUSAGE : grep [attributes] [pattern] [file_name]s\n\n"
+              "grep - Used to find certain patterns from given file(s) with FileName = file_name.\n\n"
+              "     - attributes: -E    - Extended regular expression\n\n"
+              "                   -i    - Ignore case\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[19]) == 0 || strcmp(fns[1], default_commands1[19]) == 0)
+    {
+      printf(
+              "\nUSAGE : hostname [attributes]\n\n"
+              "hostname - Prints hostname and/or IP address of current host.\n\n"
+              "         - attributes: -I    - Prints out the IP address of current host\n\n"
+              "                       -a    - Prints out all the information available to this function\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[12]) == 0 || strcmp(fns[1], default_commands1[12]) == 0)
+    {
+      printf(
+              "\nUSAGE : cd [dir_name]\n\n"
+              "cat -  Changes current working directory into [dir_name].\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[21]) == 0 || strcmp(fns[1], default_commands1[21]) == 0)
+    {
+      printf(
+              "\nUSAGE : exit\n\n"
+              "exit -  Quits the terminal.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[20]) == 0 || strcmp(fns[1], default_commands1[20]) == 0)
+    {
+      printf(
+              "\nUSAGE : alias [alias] = [existing_command]\n\n"
+              "alias -  Used to create aliases for already existing commands1.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[18]) == 0 || strcmp(fns[1], default_commands1[18]) == 0)
+    {
+      printf(
+              "\nUSAGE : calc\n\n"
+              "calc -  Opens a scientific calculator in the terminal.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[6]) == 0 || strcmp(fns[1], default_commands1[6]) == 0)
+    {
+      printf(
+              "\nUSAGE : color [color_name]\n\n"
+              "color -  Used to change the color of the prompt to [color_name].\n\n"
+            );
+    }
+
+    else if (strcmp(fns[1], commands1[22]) == 0 || strcmp(fns[1], default_commands1[22]) == 0)
+    {
+      printf(
+              "\nUSAGE : setenv\n\n"
+              "setenv -  TO BE DETERMINED.\n\n"
+            );
+    }
+    else if (strcmp(fns[1], commands1[23]) == 0 || strcmp(fns[1], default_commands1[23]) == 0)
+      {
+        printf(
+                "\nUSAGE : unsetenv\n\n"
+                "unsetenv -  TO BE DETERMINED.\n\n"
+              );
+      }
+    else
+    {
+      printf("%s : command not found\n", fns[1]);
+    }
     return;
-  }
-  printf(
-         "Hello and welcome to our shell!!\n\n"
-         "Here is an example of how the help page works : commandName_flags_arguments means that '_' must be replaced with a space and the rest is pretty self-explanatory \n\n"
-         "Here is a list of our commands and what they do:\n\n"
-         "cat_attributes_arg(s) - Prints out contents of the file(s) arg(s)\n\n"
-         "   - attributes: '-E' - used to display $ at end of each line\n\n"
-         "                 '-n' - used to number all output lines\n\n"
-         "cd_arg                - Changes current working directory into arg\n\n"
-         "color_arg             - Changes the color of the prompt to 'arg'\n\n"
-         "echo_str              - Prints out 'str' in the STDOUT or in the file\n\n"
-         "help                  - Prints out this manual\n\n"
-         "ls_attributes         - Lists out the files directories in your current working directory\n\n"
-         "   - attributes: '-a' - used to not ignore entries starting with '.'\n\n"
-         "mkdir_arg(s)          - Creates a directory or multiple directories with DirName = arg(s)\n\n"
-         "mv_arg1_arg2          - Rename arg1(file) to arg2(file) or moves arg1(file) to arg2(directory)\n\n"
-         "pwd                   - Prints out your current working directory\n\n"
-         "rm_arg(s)             - Removes the file(s) with FileName = arg(s)\n\n"
-         "rmdir_attributes_arg1 - Removes the directory or multiple directories with DirName = arg(s)\n\n"
-         "   - attributes: '-f' - used to delete non-empty directories\n\n"
-         "touch_arg(s)          - Creates file(s) with FileName = arg(s)\n\n"
-         "tree_arg              - Prints the directories/sub-directories and files in tree structure\n\n"
-         "clear                 - Clears the terminal. Similar to what we have in bash\n\n"
-         "grep_pattern_file     - Used to find certain patterns from a given file/files\n\n"
-         "  - attributes: -E    - Extended regular expression\n\n"
-         "                -i    - Ignore case\n\n"
-        );
 }
 
-void mv(char *file_1, char *file_2)
+void mv(int nb_par, char **files)
 {
-  if (rename(file_1, file_2) == -1 )
-  {
-    fprintf(stderr, "An error has occured during the process");
-    return;
-  }
+    if(nb_par < 3)
+    {
+      fprintf(stderr, "SYNTAX ERROR:\nUSAGE : mv [file_name] [file_name/dir_name]. Try 'help mv' for more information.\n");
+      return;
+    }
+    if (rename(files[1], files[2]) == -1)
+    {
+      fprintf(stderr, "An error has occured during the process");
+      return;
+    }
 }
 
 void remove_dir(int nb_par, char** dirname) //this is the rmdir fn with "-f", handles errors
 {
   if(nb_par == 1)
   {
-    fprintf(stderr, "SYNTAX ERROR:\nUsage: rmdir [dir_name]. Try 'help' for more information.\n");
+    fprintf(stderr, "SYNTAX ERROR:\nUsage: rmdir [dir_name]. Try 'help rmdir' for more information.\n");
     return;
   }
   int f = 0;
@@ -234,7 +411,7 @@ void echo(int nb_par, char** par)
   {
     fprintf(stderr, "Invalid arguments: Type 'help' to know more\n");
     return;
-  }    
+  }
   if (append == 0 && overwrite == 0)
   {
     for(int i = 1; i < nb_par; i++)
@@ -261,7 +438,7 @@ void clear(int nb_par)
 {
   if (nb_par > 1)
   {
-    fprintf(stderr, "Too many arguments: Type '-help' to know more\n");
+    fprintf(stderr, "SYNTAX ERROR:\nUSAGE : clear. Type 'help clear' to know more\n");
     return;
   }
   const char* screen_clear = " \e[1;1H\e[2J";
@@ -271,6 +448,12 @@ void clear(int nb_par)
   }
 }
 
-void sleep_fun(int seconds){
-  sleep(seconds);
+void sleep_fun(int nb_par, char** fns)
+{
+  if(nb_par != 2)
+  {
+    fprintf(stderr, "SYNTAX ERROR:\nUSAGE : sleep [number]. Try 'help sleep' for more information.\n");
+    return;
+  }
+  sleep(atoi(fns[1]));
 }

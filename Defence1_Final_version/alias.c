@@ -7,7 +7,7 @@ void alias(int nb_par, char** parameters, const char** commands)
 {
     if (nb_par != 4)
     {
-      fprintf(stderr, "SYNTAX ERROR:\nUsage: alias . Try 'help' for more information.awdawdawd\n");
+      fprintf(stderr, "SYNTAX ERROR:\nUsage: alias . Try 'help alias' for more information.awdawdawd\n");
       return;
     }
     if((strcmp(parameters[2], "=")) != 0)

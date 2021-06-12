@@ -46,7 +46,7 @@ void redirection(char *buf, int type)
     char *com[k + 1];
     for (i = 0; i < k; i++)
         com[i] = st[i];
-    
+
     com[i] = NULL;
 
     pid = fork();
@@ -119,8 +119,8 @@ void redirection(char *buf, int type)
             grep(k, st);
         else if (strcmp(token, "echo") == 0)
             echo(st, k);
-        else if (strcmp(token, "help") == 0)
-            helppage(k);
+        /*else if (strcmp(token, "help") == 0)
+            helppage(k);*/
         else if (strcmp(token, "mkdir") == 0)
             create_dir(k, st);
         exit(0);
@@ -132,6 +132,6 @@ void redirection(char *buf, int type)
     }
     free(st);
     return;
-    
-    
+
+
 }
