@@ -33,6 +33,7 @@
 #include "echo.h"
 #include "redirection.h"
 #include "pipe.h"
+#include "env.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -45,13 +46,13 @@ void populateMenu(){
     static const char *items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit"};
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
-                                  "calc", "hostname", "alias", "exit"};
+                                  "calc", "hostname", "alias", "exit", "setenv", "unsetenv"};
 
 
     commands = items;
@@ -283,31 +284,8 @@ char* read_command(char **parameters, int *nb_par)
 
   return temp;
 }
-  //int j  = 0;
-	/*while(line[j] != '\0')
-  {
-    if (line[j] == ' ' && sub_index != 0)
-    {
-      parameters[i][sub_index] = 0;
-			i++;
-			sub_index = 0;
-		}
-    else if (line[j] != ' ')
-    {
-			parameters[i][sub_index] = line[j];
-			sub_index++;
-    }
-    j++;
-  }
-  if (line[j] == 0 && sub_index != 0)
-  {
-    parameters[i][sub_index] = 0;
-    i++;
-    sub_index = 0;
-  }
-  *nb_par = i;
-  return;
-}*/
+
+
 
 int exec(char** parameters, int *nb_par)
 {
@@ -376,11 +354,6 @@ int exec(char** parameters, int *nb_par)
       get_host_name(*nb_par, parameters);
       return 0;
     }
-    /*else {
-      red();
-      printf("SHELL : Unknown command. Type help to list all the possible commands\n");
-      return;
-    }*/
     return 1;
   
 }
@@ -430,7 +403,9 @@ int main()
         redirection(buf, check_red-2);
         free(buf);
       }
+      
 
+      /// All the functions which do not need forking. 
       else if (strcmp(parameters[0], commands[12]) == 0 || strcmp(parameters[0], default_commands[12]) == 0)
         cd(nb_par, parameters);
       
@@ -445,7 +420,15 @@ int main()
 
       else if (strcmp(parameters[0], commands[6]) == 0 || strcmp(parameters[0], default_commands[6]) == 0)
         change_color(parameters[1], color);
+
+      else if (strcmp(parameters[0], commands[22]) == 0 || strcmp(parameters[0], default_commands[22]) == 0)
+        set_env(parameters, nb_par);    
       
+      else if (strcmp(parameters[0], commands[23]) == 0 || strcmp(parameters[0], default_commands[23]) == 0)
+        unset_env(parameters, nb_par);
+
+
+      // Call the functions which need forking.
       else{
         pid = fork();
 
@@ -487,6 +470,7 @@ int main()
     free(parameters);
     prompt(color);
   }
+  return 0;
 }
     /*if (nb_par > 0){
       prompt(color);

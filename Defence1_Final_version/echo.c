@@ -16,7 +16,6 @@ void echo(char** buff, int k)
     int lk = strlen(buff[(k - 1)]);
     int flag = 0;
 
-    
     for (i = 1; i < k; i++)
     {
         int j;
