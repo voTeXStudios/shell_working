@@ -159,6 +159,14 @@ void execute_pipe(char *buff)
                     helppage(k);*/
                 else if (strcmp(token, "mkdir") == 0)
                     create_dir(k, st);
+                else if (strcmp(token, "rmdir") == 0)
+                    remove_dir(k, st);
+                else if (strcmp(token, "tictactoe") == 0)
+                    play(k);
+                else if (strcmp(token, "mv") == 0)
+                    mv(k, st);
+                else if (strcmp(token, "calc") == 0)
+                    calc(k);
                 else
                 {
                     dup2(saved_stdout, 1);
@@ -218,6 +226,14 @@ void execute_pipe(char *buff)
                         helppage(k);*/
                     else if (strcmp(token, "mkdir") == 0)
                         create_dir(k, st);
+                    else if (strcmp(token, "rmdir") == 0)
+                        remove_dir(k, st);
+                    else if (strcmp(token, "tictactoe") == 0)
+                        play(k);
+                    else if (strcmp(token, "mv") == 0)
+                        mv(k, st);
+                    else if (strcmp(token, "calc") == 0)
+                        calc(k);
                     else
                     {
                         dup2(saved_stdout, 1);
@@ -250,13 +266,21 @@ void execute_pipe(char *buff)
                     helppage(j);*/
                 else if (strcmp(token, "mkdir") == 0)
                     create_dir(j, (*commands));
+                else if (strcmp(token, "rmdir") == 0)
+                    remove_dir(j, (*commands));
+                else if (strcmp(token, "tictactoe") == 0)
+                    play(j);
+                else if (strcmp(token, "mv") == 0)
+                    mv(j, (*commands));
+                else if (strcmp(token, "calc") == 0)
+                    calc(j);
                 else
                 {
                     dup2(saved_stdout, 1);
                     printf("No such Command.\n");
                 }
             }
-            exit(EXIT_FAILURE);
+            return;
         }
         else
         {

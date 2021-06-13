@@ -2,7 +2,7 @@
 
 CC= gcc
 CPPFLAGS=
-CFLAGS= -Wall -Wextra
+CFLAGS= -w
 LDFLAGS=
 LDLIBS= -lreadline -lm -lncurses
 

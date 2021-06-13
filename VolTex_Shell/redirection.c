@@ -17,6 +17,9 @@
 #include "hostname.h"
 #include "grep.h"
 #include "echo.h"
+#include "tic_tac_toe.h"
+#include "calc.h"
+#include "alias.h"
 
 void redirection(char *buf, int type)
 {
@@ -123,7 +126,15 @@ void redirection(char *buf, int type)
             helppage(k);*/
         else if (strcmp(token, "mkdir") == 0)
             create_dir(k, st);
-        exit(0);
+        else if (strcmp(token, "rmdir") == 0)
+            remove_dir(k, st);
+        else if (strcmp(token, "tictactoe") == 0)
+            play(k);
+        else if (strcmp(token, "mv") == 0)
+            mv(k, st);
+        else if (strcmp(token, "calc") == 0)
+            calc(k);
+        return;
     }
     else
     {

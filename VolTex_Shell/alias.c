@@ -167,6 +167,12 @@ void alias(int nb_par, char** parameters, const char** commands)
       printf("Succesfully set an alias for %s : %s\n", parameters[3], parameters[1]);
       return;
     }
+    else if (strcmp(parameters[3], "invader") == 0)
+    {
+      commands[25] = strdup(parameters[1]);
+      printf("Succesfully set an alias for %s : %s\n", parameters[3], parameters[1]);
+      return;
+    }
     else
     {
       printf("Such a command does not exist\n");

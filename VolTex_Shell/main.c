@@ -51,14 +51,14 @@ void populateMenu(){
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe", "invader", "cmat"};
+                                  "tictactoe", "invader"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe", "invader", "cmat"};
+                                  "tictactoe", "invader"};
 
 
     commands = items;
@@ -206,6 +206,7 @@ void ctrl_z()
 
 
 void red (){
+  //printf("\033[0;31m");
   printf("\033[0;31m");
 }
 void yellow(){
@@ -247,7 +248,7 @@ void prompt(char *color)
     f_time = 0;
   }
   yellow();
-  printf("Vol-Tex-Sh:~");
+  printf("<Vol-Tex-Sh:>~ ");
   if (strcmp(color, "yellow") == 0){
     yellow();
   }
@@ -267,18 +268,19 @@ void prompt(char *color)
     cyan();
   }
 
-  printf(" ");
-  pwd(1);
+  char* path = pwd(1);
+  printf("%s", path);
   reset();
 }
 
 char* read_command(char **parameters, int *nb_par)
 {
+  
   char *line;
   char* token;
   char* temp = malloc(200 * sizeof(char));
   int i = 0;
-  line = readline("$ ");
+  line = readline("$~ ");
   strcpy(temp, line);
   token = strtok(line, " \n\t\r");
 
@@ -288,7 +290,7 @@ char* read_command(char **parameters, int *nb_par)
     token = strtok(NULL, " \n\t\r");
   }
   *nb_par = i;
-
+  //free(buf);
   return temp;
 }
 
@@ -297,8 +299,8 @@ char* read_command(char **parameters, int *nb_par)
 int exec(char** parameters, int *nb_par)
 {
     if (strcmp(parameters[0], commands[0]) == 0 || strcmp(parameters[0], default_commands[0]) == 0){
-      pwd(*nb_par);
-      printf("\n");
+      char* path = pwd(*nb_par);
+      printf("%s\n", path);
       return 0;
     }
     else if (strcmp(parameters[0], commands[1]) == 0 || strcmp(parameters[0], default_commands[1]) == 0){
@@ -379,7 +381,7 @@ int main()
   populateMenu();
   int nb_par = 0;
   int pid;
-  char color[20];
+  char color[10];
   char** parameters;
   char* buf;
   int check_red;
@@ -390,6 +392,8 @@ int main()
   signal(SIGINT, ctrl_c);
   signal(SIGTSTP, ctrl_z);
   prompt(color);
+
+  //change_color("cyan", color);
 
 
   while (1)
@@ -453,10 +457,12 @@ int main()
         play(nb_par);
       
       else if (strcmp(parameters[0], commands[25]) == 0 || strcmp(parameters[0], default_commands[25]) == 0)
+      { 
         SpaceInvaders(nb_par);
+      }
     
-      else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0)
-        cmat(nb_par);
+      /*else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0)
+        cmat(nb_par);*/
        
       
      
@@ -479,7 +485,6 @@ int main()
           int check = exec(parameters, &nb_par);
 
           if (check != 0){
-            red();
             printf("SHELL: Unknown command. Type help to know more\n");
             return 1;
           }
