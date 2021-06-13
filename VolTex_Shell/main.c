@@ -43,6 +43,7 @@ int back_count = 0, shellid = 0, childpid = 0;
 job fore;
 const char** commands = NULL;
 
+void prompt(char * color);
 const char** default_commands = NULL;
 /////////////////////////////////////////////////
 void populateMenu(){
@@ -167,6 +168,7 @@ void child_sig()
                 printf("\n%s with pid %d exited normally\n", back[i].name, back[i].pid);
             else
                 printf("\n%s with pid %d exited with exit status %d\n", back[i].name, back[i].pid, exit_status);
+          
             fflush(stdout);
             break;
         }
@@ -359,6 +361,10 @@ int exec(char** parameters, int *nb_par)
       get_host_name(*nb_par, parameters);
       return 0;
     }
+    
+    
+    
+      
     return 1;
 
 }
@@ -402,6 +408,7 @@ int main()
 
     if (nb_par > 0)
     {
+      
       c = check_pipe(buf);
       check_red = check_redirection(buf);
       
@@ -416,6 +423,7 @@ int main()
         redirection(buf, check_red-2);
         free(buf);
       }
+      
 
 
       /// All the functions which do not need forking.
@@ -435,29 +443,42 @@ int main()
         change_color(parameters[1], color);
 
       else if (strcmp(parameters[0], commands[22]) == 0 || strcmp(parameters[0], default_commands[22]) == 0)
-        set_env(parameters, nb_par);
+     
+         set_env(parameters, nb_par);
+       
+    
 
       else if (strcmp(parameters[0], commands[23]) == 0 || strcmp(parameters[0], default_commands[23]) == 0)
+        
         unset_env(parameters, nb_par);
+    
 
       else if (strcmp(parameters[0], commands[24]) == 0 || strcmp(parameters[0], default_commands[24]) == 0)
         play(nb_par);
       
       else if (strcmp(parameters[0], commands[25]) == 0 || strcmp(parameters[0], default_commands[25]) == 0)
         SpaceInvaders(nb_par);
-      
+    
       else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0)
         cmat(nb_par);
+       
+      
+     
+    
+      
+      
       // Call the functions which need forking.
-      else{
+      else
+      {
         pid = fork();
 
         if (pid < 0){
           printf("Error: Fork failed\n");
           return 1;
         }
-
-        else if (pid == 0){
+      
+        else if (pid == 0)
+        {
           setpgid(0, 0);
           int check = exec(parameters, &nb_par);
 
@@ -469,7 +490,9 @@ int main()
         }
         else
         {
+
           childpid = pid;
+          
           char name[100];
           strcpy(name, parameters[0]);
 
@@ -482,14 +505,17 @@ int main()
           fore.pid = pid;
           strcpy(fore.name, name);
           fore.is_back = 0;
-          waitpid(-1, NULL, WUNTRACED);
+          waitpid(pid, NULL, WUNTRACED);
+          //wait(NULL)
 
         }
-      }
+       
+      }      
     }
+    prompt(color);
     
     free(parameters);
-    prompt(color);
+    
   }
   return 0;
 }
