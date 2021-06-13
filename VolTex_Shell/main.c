@@ -361,10 +361,6 @@ int exec(char** parameters, int *nb_par)
       get_host_name(*nb_par, parameters);
       return 0;
     }
-    
-    
-    
-      
     return 1;
 
 }
@@ -505,7 +501,7 @@ int main()
           fore.pid = pid;
           strcpy(fore.name, name);
           fore.is_back = 0;
-          waitpid(pid, NULL, WUNTRACED);
+          waitpid(-1, NULL, WUNTRACED);
           //wait(NULL)
 
         }
