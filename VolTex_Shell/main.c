@@ -37,6 +37,8 @@
 #include "tic_tac_toe.h"
 #include "invader.h"
 #include "cmat.h"
+#include "history.h"
+
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -272,6 +274,7 @@ void prompt(char *color)
 
 char* read_command(char **parameters, int *nb_par)
 {
+
   char *line;
   char* token;
   char* temp = malloc(200 * sizeof(char));
