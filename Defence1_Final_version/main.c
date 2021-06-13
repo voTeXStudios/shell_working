@@ -298,7 +298,7 @@ int exec(char** parameters, int *nb_par)
       return 0;
     }
     else if (strcmp(parameters[0], commands[1]) == 0 || strcmp(parameters[0], default_commands[1]) == 0){
-      helppage(*nb_par, parameters);
+      helppage(*nb_par, parameters, commands, default_commands);
       return 0;
     }
     else if (strcmp(parameters[0], commands[2]) == 0 || strcmp(parameters[0], default_commands[2]) == 0){
@@ -402,7 +402,7 @@ int main()
     {
       c = check_pipe(buf);
       check_red = check_redirection(buf);
-
+      
       if (c == 1)
       {
         execute_pipe(buf);
@@ -440,7 +440,7 @@ int main()
 
       else if (strcmp(parameters[0], commands[24]) == 0 || strcmp(parameters[0], default_commands[24]) == 0)
         play();
-
+      
       // Call the functions which need forking.
       else{
         pid = fork();
@@ -480,70 +480,10 @@ int main()
         }
       }
     }
+    
     free(parameters);
     prompt(color);
   }
   return 0;
 }
-    /*if (nb_par > 0){
-      prompt(color);
-      free(parameters);
-      continue;
-    }
-
-    if (strcmp(parameters[0], commands[12]) == 0 || strcmp(parameters[0], default_commands[12]) == 0){
-      exec(color, parameters, &nb_par);
-      prompt(color);
-      free(parameters);
-      continue;
-    }
-    if (strcmp(parameters[0], commands[20]) == 0 || strcmp(parameters[0], default_commands[20]) == 0){
-      alias(nb_par, parameters, commands);
-      prompt(color);
-      free(parameters);
-      continue;
-    }
-    if (strcmp(parameters[0], commands[6]) == 0 || strcmp(parameters[0], default_commands[6]) == 0){
-      change_color(parameters[1],color);
-      prompt(color);
-      free(parameters);
-      continue;
-    }
-    if (strcmp(parameters[0], commands[18]) == 0 || strcmp(parameters[0], default_commands[18]) == 0){
-      calc(atoi(parameters[1]));
-      prompt(color);
-      free(parameters);
-      continue;
-    }
-    pid = fork();
-    if (pid != 0)
-    {
-      if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
-        exit(1);
-      prompt(color);
-      childpid = pid;
-      char name[100];
-      strcpy(name, parameters[0]);
-      for (int i = 1; i< nb_par - 1; i ++)
-      {
-        strcat(name, " ");
-        strcat(name, parameters[i]);
-      }
-
-      fore.pid = pid;
-      strcpy(fore.name, name);
-      fore.is_back = 0;
-      waitpid(-1, NULL, WUNTRACED);
-    }
-
-    else
-    {
-      setpgid(0, 0);
-      if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
-        exit(1);
-      exec(color, parameters, &nb_par);
-    }
-
-    if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
-      exit(1);
-    free(parameters);*/
+    

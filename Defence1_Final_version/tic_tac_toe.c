@@ -45,15 +45,13 @@ void play()
 {
 	int winner = 0, count = 0;
 	int pos[9], index, sign, player, flag, i, k;
-	int input;
-	char c; 
+	
 
 	for(i=0; i<9; i++)
 		pos[i] = ' ';
 	board(pos);
 	while (count < 9 && winner != 1){
 		flag = 0;
-		input = 0;
 		//print board
 		if (count % 2 == 0){
 			sign = 'X';
@@ -64,24 +62,27 @@ void play()
 			player = 2;
 		}
 
-		printf("Move for player %d[1-9]: ", player);
-		c = getc(stdin);
-		while (c != '\n')
+		printf("Move for player %d[1-9] (0 for exit): ", player);
+
+		int check = scanf("%d", &index);
+
+		while((getchar() != '\n'));
+
+		if (check != 1)
 		{
-			if (c < 49 || c > 57)
-				break;
-			else{
-				index = c - 48;
-			}
-			input++;
-			c = getc(stdin);
-		}
-		if (input != 1)
-		{
-			printf("ERROR: Invalid Input\n");
+			printf("ERROR: Invalid arg\n");
 			continue;
+
 		}
-					
+			
+		if (index == 0)
+			return;
+
+		if (index < 1 || index > 9){
+			printf("ERROR: Invalid position\n");
+			continue;			
+		}
+		
 
 		if (pos[index - 1] == 'X' || pos[index - 1] == 'O'){
 			printf("NOTE: Position is occupied\n");
