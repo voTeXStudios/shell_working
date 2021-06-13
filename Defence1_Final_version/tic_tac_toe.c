@@ -41,8 +41,13 @@ void board(int pos[])
 	printf("     |     |     \n\n");
 }
 
-void play()
+void play(int nb_par)
 {
+	if (nb_par > 1)
+	{
+		printf("ERROR: Too many arguments. Type 'help tictactoe' to know more\n'");
+		return;
+	}
 	int winner = 0, count = 0;
 	int pos[9], index, sign, player, flag, i, k;
 	

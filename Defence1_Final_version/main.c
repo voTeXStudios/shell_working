@@ -35,6 +35,8 @@
 #include "pipe.h"
 #include "env.h"
 #include "tic_tac_toe.h"
+#include "invader.h"
+#include "cmat.h"
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -48,14 +50,14 @@ void populateMenu(){
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe"};
+                                  "tictactoe", "invader", "cmat"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe"};
+                                  "tictactoe", "invader", "cmat"};
 
 
     commands = items;
@@ -439,8 +441,13 @@ int main()
         unset_env(parameters, nb_par);
 
       else if (strcmp(parameters[0], commands[24]) == 0 || strcmp(parameters[0], default_commands[24]) == 0)
-        play();
+        play(nb_par);
       
+      else if (strcmp(parameters[0], commands[25]) == 0 || strcmp(parameters[0], default_commands[25]) == 0)
+        SpaceInvaders(nb_par);
+      
+      else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0)
+        cmat(nb_par);
       // Call the functions which need forking.
       else{
         pid = fork();
