@@ -36,9 +36,7 @@
 #include "env.h"
 #include "tic_tac_toe.h"
 #include "invader.h"
-#include "cmat.h"
 #include "history.h"
-
 
 job back[100];
 int back_count = 0, shellid = 0, childpid = 0;
@@ -53,14 +51,14 @@ void populateMenu(){
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe", "invader", "history"};
+                                  "tictactoe", "invader", "history", "chmod"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe", "invader", "history"};
+                                  "tictactoe", "invader", "history", "chmod"};
 
 
     commands = items;
@@ -368,6 +366,14 @@ int exec(char** parameters, int *nb_par)
       history(*nb_par);
       return 0;
     }
+    else if (strcmp(parameters[0], commands[27]) == 0 || strcmp(parameters[0], default_commands[26]) == 0){
+      if (*nb_par != 3){
+        printf("ERROR: Invalid Arguments. Type 'help chmod' to know more\n");
+        return 2;
+      }
+      int x = chmod(parameters[2], atoi(parameters[1]));
+      return x;
+    }
     return 1;
 
 }
@@ -398,9 +404,6 @@ int main()
   signal(SIGTSTP, ctrl_z);
   prompt(color);
 
- 
-  
-  //change_color("cyan", color);
   int index = 0;
 
   while (1)
@@ -416,7 +419,7 @@ int main()
    
     my_add_history(index, buf);
     index++;
-    //printf("%s\n", dirname);
+    
     if (nb_par > 0)
     {
       
@@ -472,12 +475,11 @@ int main()
         play(nb_par);
       
       else if (strcmp(parameters[0], commands[25]) == 0 || strcmp(parameters[0], default_commands[25]) == 0)
-      { 
+       
         SpaceInvaders(nb_par);
-      }
+      
     
-      /*else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0)
-        cmat(nb_par);*/
+      
        
       
       // Call the functions which need forking.
@@ -495,7 +497,7 @@ int main()
           setpgid(0, 0);
           int check = exec(parameters, &nb_par);
 
-          if (check != 0){
+          if (check == 1){
             printf("SHELL: Unknown command. Type help to know more\n");
             return 1;
           }
@@ -518,15 +520,13 @@ int main()
           strcpy(fore.name, name);
           fore.is_back = 0;
           waitpid(-1, NULL, WUNTRACED);
-          //wait(NULL)
 
         }
        
       }     
       
     }
-    prompt(color);
-    
+    prompt(color);    
     free(parameters);
     
   }

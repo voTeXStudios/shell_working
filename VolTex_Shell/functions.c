@@ -234,14 +234,14 @@ void helppage(int nb_par, char **fns, const char **commands1, const char **defau
     else if (strcmp(fns[1], commands1[22]) == 0 || strcmp(fns[1], default_commands1[22]) == 0)
     {
       printf(
-              "\nUSAGE : setenv\n\n"
+              "\nUSAGE : setenv [VAR] [val]\n\n"
               "setenv -  Sets the value of an environment variable.\n\n"
             );
     }
     else if (strcmp(fns[1], commands1[23]) == 0 || strcmp(fns[1], default_commands1[23]) == 0)
       {
         printf(
-                "\nUSAGE : unsetenv\n\n"
+                "\nUSAGE : unsetenv [VAR]\n\n"
                 "unsetenv -  Unsets the value of the environment variable.\n\n"
               );
       }
@@ -250,6 +250,27 @@ void helppage(int nb_par, char **fns, const char **commands1, const char **defau
               "\nUSAGE : tictactoe\n\n"
               "tictactoe - Launches a game of TicTacToe.\n\n"
             );
+    }
+    else if (strcmp(fns[1], commands1[25]) == 0 || strcmp(fns[1], default_commands1[25]) == 0)
+    {
+      printf(
+        "\nUSAGE: invader\n\n"
+        "invader - Launches a space invader game on shell.\n\n"
+      );
+    }
+    else if (strcmp(fns[1], commands1[26]) == 0 || strcmp(fns[1], default_commands1[26]) == 0)
+    {
+      printf(
+        "\nUSAGE: history\n\n"
+        "history - prints the history of the commands used since the start of the shell session.\n\n"
+      );
+    }
+    else if (strcmp(fns[1], commands1[27]) == 0 || strcmp(fns[1], default_commands1[27]) == 0)
+    {
+      printf(
+        "\nUSAGE: chmod [MODE in Integer] file\n\n"
+        "chmod - Changes the permissions of a file\n\n"
+      );
     }
     else
       printf("%s : command not found\n", fns[1]);

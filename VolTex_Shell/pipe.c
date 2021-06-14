@@ -25,6 +25,9 @@
 #include "hostname.h"
 #include "grep.h"
 #include "echo.h"
+#include "calc.h"
+#include "tic_tac_toe.h"
+#include "alias.h"
 
 
 int check_op(char *str)

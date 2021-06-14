@@ -27,11 +27,10 @@
 
 #if __DARWIN_UNIX03
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include " errno.h"
+#include "chmod.h"
 
-extern int __chmod(const char *path, mode_t mode);
+//extern int __chmod(const char *path, mode_t mode);
 
 /*
  * chmod stub, ignore S_ISUID and/or S_ISGID on EPERM,
@@ -39,7 +38,9 @@ extern int __chmod(const char *path, mode_t mode);
  *
  * This is for UNIX03 only.
  */
-int chmod(const char *path, mode_t mode)
+
+
+int Chmod(const char *path, mode_t mode)
 {
 	int res = __chmod(path, mode);
 
