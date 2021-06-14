@@ -1,0 +1,3 @@
+cd.c: void print_error_cd(char *this, char *dirname)
+cd.c: void print_usage_cd()
+cd.c: void cd(int argc, char *argv[])

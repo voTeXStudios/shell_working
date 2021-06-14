@@ -27,7 +27,7 @@ void redirection(char *buf, int type)
     char *ip[2];
     char *temp;
     char *temp2;
-
+    //int saved_stdout = dup(STDOUT_FILENO);
     char** st = malloc(100 * sizeof(char*));
     for (size_t i = 0; i < 100; i++)
       st[i] = calloc(100, sizeof(char));
@@ -134,7 +134,7 @@ void redirection(char *buf, int type)
             mv(k, st);
         else if (strcmp(token, "calc") == 0)
             calc(k);
-        return;
+        exit(0);
     }
     else
     {

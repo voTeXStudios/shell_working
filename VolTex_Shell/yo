@@ -5,6 +5,7 @@ redirection.c
 [0mpipe.o
 [0mbg.c
 [0mecho.o
+[0myo
 [0mhistory.o
 [0mcalc.c
 [0mrm.c

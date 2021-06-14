@@ -176,6 +176,7 @@ void execute_pipe(char *buff)
                     printf("No such Command.\n");
                 }
                 free(st);
+           
             }
             if (check_op((*commands)[0]))
             {
@@ -247,8 +248,11 @@ void execute_pipe(char *buff)
             }
             else
             {
-                char *token;
+                char* token;
                 token = strtok((*commands)[0], " \n\t\r");
+                printf("%s %i\n", token, j);
+               
+                
                 if (strcmp(token, "cd") == 0)
                     cd(j, (*commands));
                 else if (strcmp(token, "pwd") == 0)
@@ -283,7 +287,7 @@ void execute_pipe(char *buff)
                     printf("No such Command.\n");
                 }
             }
-            return;
+            exit(EXIT_FAILURE);
         }
         else
         {

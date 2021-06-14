@@ -273,7 +273,7 @@ void prompt(char *color)
   reset();
 }
 
-char* read_command(char **parameters, int *nb_par)
+char* read_command(int *index, char **parameters, int *nb_par)
 {
   char *line;
   char* token;
@@ -289,6 +289,7 @@ char* read_command(char **parameters, int *nb_par)
     token = strtok(NULL, " \n\t\r");
   }
   *nb_par = i;
+  my_add_history(*index, temp);
   //free(buf);
   return temp;
 }
@@ -415,10 +416,10 @@ int main()
     for (size_t i = 0; i < 500; i++)
       parameters[i] = calloc(100, sizeof(char));
 
-    buf = read_command(parameters, &nb_par);
-   
-    my_add_history(index, buf);
+    buf = read_command(&index, parameters, &nb_par);
     index++;
+
+    
     
     if (nb_par > 0)
     {
@@ -438,7 +439,7 @@ int main()
         free(buf);
       }
       
-
+      
 
       /// All the functions which do not need forking.
       else if (strcmp(parameters[0], commands[12]) == 0 || strcmp(parameters[0], default_commands[12]) == 0)
@@ -499,7 +500,7 @@ int main()
 
           if (check == 1){
             printf("SHELL: Unknown command. Type help to know more\n");
-            return 1;
+            exit(EXIT_FAILURE);
           }
         }
         else
@@ -526,9 +527,8 @@ int main()
       }     
       
     }
-    prompt(color);    
     free(parameters);
-    
+    prompt(color);    
   }
   return 0;
 }

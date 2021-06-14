@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <curses.h>
+#include <ncurses.h>
 #include <time.h>
+#include <unistd.h>
 #include "invader.h"
 
 #define MAX_BOMBS 1000
