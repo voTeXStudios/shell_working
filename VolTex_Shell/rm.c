@@ -23,12 +23,7 @@ void print_usage()
     printf("ERROR: Is a directory\n");
     return;
 }
-void print_no_arg_err()
-{
-    fprintf(stderr, "Invalid Operand: Type 'help' to know more\n");
-    printf("ERROR: File path invalid\n");
-    return;
-}
+
 int isDirExits(const char *path)
 {
     struct stat buf;

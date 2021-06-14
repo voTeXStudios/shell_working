@@ -1,6 +1,7 @@
 #ifndef HISTORY_H
+#define HISTORY_H
 
-int add_history(char *cmd, FILE *file);
-int history(void);
+void my_add_history(int index, char *cmd);
+int history(int nb_par);
 
 #endif

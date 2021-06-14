@@ -53,14 +53,14 @@ void populateMenu(){
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe", "invader"};
+                                  "tictactoe", "invader", "history"};
 
 
     static const char *def_items[] = {"pwd", "help", "mkdir", "touch", "mv", "rmdir",
                                   "color", "clear", "tree", "rm", "cat", "ls",
                                   "cd", "echo", "bg", "sleep", "job", "grep",
                                   "calc", "hostname", "alias", "exit", "setenv", "unsetenv",
-                                  "tictactoe", "invader"};
+                                  "tictactoe", "invader", "history"};
 
 
     commands = items;
@@ -364,6 +364,10 @@ int exec(char** parameters, int *nb_par)
       get_host_name(*nb_par, parameters);
       return 0;
     }
+    else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0){
+      history(*nb_par);
+      return 0;
+    }
     return 1;
 
 }
@@ -394,11 +398,14 @@ int main()
   signal(SIGTSTP, ctrl_z);
   prompt(color);
 
+ 
+  
   //change_color("cyan", color);
-
+  int index = 0;
 
   while (1)
   {
+   
     childpid = -1;
     parameters = malloc(500 * sizeof(char*));
 
@@ -406,7 +413,10 @@ int main()
       parameters[i] = calloc(100, sizeof(char));
 
     buf = read_command(parameters, &nb_par);
-
+   
+    my_add_history(index, buf);
+    index++;
+    //printf("%s\n", dirname);
     if (nb_par > 0)
     {
       
@@ -432,7 +442,11 @@ int main()
         cd(nb_par, parameters);
 
       else if (strcmp(parameters[0], commands[21]) == 0 || strcmp(parameters[0], default_commands[21]) == 0)
+      {
+        //strcat(dirname, "/history");
+        remove("/tmp/.history");
         exit(1);
+      }
 
       else if (strcmp(parameters[0], commands[20]) == 0 || strcmp(parameters[0], default_commands[20]) == 0)
         alias(nb_par, parameters, commands);
@@ -465,10 +479,6 @@ int main()
       /*else if (strcmp(parameters[0], commands[26]) == 0 || strcmp(parameters[0], default_commands[26]) == 0)
         cmat(nb_par);*/
        
-      
-     
-    
-      
       
       // Call the functions which need forking.
       else
@@ -512,7 +522,8 @@ int main()
 
         }
        
-      }      
+      }     
+      
     }
     prompt(color);
     
